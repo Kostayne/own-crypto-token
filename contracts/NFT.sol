@@ -1,28 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
+import "./IERC721.sol";
 import "./IERC721Receiver.sol";
-
-interface ERC721 {
-    event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
-    event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
-    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
-
-    function balanceOf(address owner) external view returns (uint256 balance);
-    function ownerOf(uint256 tokenId) external view returns (address owner);
-
-    function approve(address to, uint256 tokenId) external;
-    function getApproved(uint256 tokenId) external view returns (address operator);
-
-    function setApprovalForAll(address operator, bool _approved) external;
-    function isApprovedForAll(address owner, address operator) external view returns (bool);
-
-    function transfer(address to, uint256 tokenId) external;
-    function transferFrom(address from, address to, uint256 tokenId) external;
-    function safeTransferFrom(address from, address to, uint256 tokenId) external;
-
-    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) external;
-}
 
 contract DigitalArt is ERC721 {
     string private _name;
@@ -81,9 +61,9 @@ contract DigitalArt is ERC721 {
     event LogArtTokenCreate(uint _tokenId, string _title, string _category, string _authorName, uint256 _price, address _author,  address _currentOwner);
     event LogArtResell(uint _tokenId, uint _status, uint256 _price); 
 
-    constructor(string memory name, string memory symbol) {
-        _name = name;
-        _symbol = symbol;
+    constructor(string memory __name, string memory __symbol) {
+        _name = __name;
+        _symbol = __symbol;
     }
 
     function name() public view returns (string memory) {
@@ -242,7 +222,7 @@ contract DigitalArt is ERC721 {
     }
 
     function approve(address to, uint256 tokenId) approvalTargetIsValid(to) public override {
-        require(isOwnerOf(tokenId, msg.sender), "You are not the owner of this art");
+        require(_isOwnerOrApproved(msg.sender, tokenId), "You are not the owner of this art or approved");
         _tokenApprovals[tokenId] = to;
 
         emit Approval(msg.sender, to, tokenId);
@@ -272,15 +252,15 @@ contract DigitalArt is ERC721 {
     }
 
     function safeTransferFrom(address from, address to, uint256 tokenId) transferIsValid(from, to, tokenId) public override {
-        require(_checkOnERC721Received(from, to, tokenId, ""), "Transfer rejected");
-
         _transferOwnership(from, to, tokenId);
+
+        require(_checkOnERC721Received(from, to, tokenId, ""), "Transfer rejected");
     }
 
     function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public override {
-        require(_checkOnERC721Received(from, to, tokenId, data), "Transfer rejected");
-
         _transferOwnership(from, to, tokenId);
+
+        require(_checkOnERC721Received(from, to, tokenId, data), "Transfer rejected");
     }
 
     // INTERNAL FUNCTIONS

@@ -1,34 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-interface ERC20 {
-    function transfer(address to, uint256 value) external returns (bool);
-
-    function approve(address spender, uint256 value) external returns (bool);
-
-    function transferFrom(
-        address from,
-        address to,
-        uint256 value
-    ) external returns (bool);
-
-    function totalSupply() external view returns (uint256);
-
-    function balanceOf(address who) external view returns (uint256);
-
-    function allowance(
-        address owner,
-        address spender
-    ) external view returns (uint256);
-
-    event TransferEvt(address indexed from, address indexed to, uint256 value);
-
-    event ApprovalEvt(
-        address indexed owner,
-        address indexed spender,
-        uint256 value
-    );
-}
+import "./IERC20.sol";
 
 // Defines owner & admin roles
 contract Owned {
@@ -73,7 +46,7 @@ contract Owned {
 contract WhiteList is Owned {
     mapping(address => bool) whiteList;
 
-    function addWhiteList(address account) public onlyAdmin {
+    function addToWhiteList(address account) public onlyAdmin {
         require(account != address(0) && whiteList[account] == false);
         whiteList[account] = true;
     }
@@ -82,7 +55,7 @@ contract WhiteList is Owned {
         return whiteList[account];
     }
 
-    function removeWhiteListed(address account) public onlyAdmin {
+    function removeFromWhiteList(address account) public onlyAdmin {
         require(account != address(0) && whiteList[account] == true);
         whiteList[account] = false;
     }
@@ -120,25 +93,14 @@ contract Pausable is Owned {
     }
 }
 
-// Our token
-contract MyERC20Token is ERC20, Owned, WhiteList, Pausable {
+// actual implementation
+contract MyToken is ERC20, Owned, WhiteList, Pausable {
     TokenSummary public tokenSummary;
 
     mapping(address => uint256) internal balances;
     mapping(address => mapping(address => uint256)) internal allowed;
 
     uint256 internal _totalSupply;
-
-    // CODES & MESSAGES
-    // --------------------------
-    // success
-    uint8 public constant SUCCESS_CODE = 0;
-    string public constant SUCCESS_MESSAGE = "SUCCESS";
-
-    // non white list
-    uint8 public constant NON_WHITE_LIST_CODE = 1;
-    string public constant NON_WHITE_LIST_ERROR =
-        "ILLEGAL_TRANSFER_TO_NON_WHITE_LIST_ADDRESS";
 
     struct TokenSummary {
         address initialAccount;
@@ -164,49 +126,35 @@ contract MyERC20Token is ERC20, Owned, WhiteList, Pausable {
         address initialAccount,
         uint initialBalance
     ) {
-        addWhiteList(initialAccount);
+        require(bytes(_name).length > 0, "Empty token name!");
+        require(bytes(_symbol).length > 0, "Empty token symbol!");
+        require(initialBalance >= 0, "Balance can't be negative");
+
+        addToWhiteList(initialAccount);
         balances[initialAccount] = initialBalance;
 
         _totalSupply = initialBalance;
         tokenSummary = TokenSummary(initialAccount, _name, _symbol);
     }
 
-    modifier verify(
+    modifier verifyTransfer(
         address from,
         address to,
         uint256 value
     ) {
-        uint8 restrictionCode = validateTransferRestrict(to);
-
+        // person needs to be white listed to accept transfers
         require(
-            restrictionCode == SUCCESS_CODE,
-            messageHandler(restrictionCode)
+            isWhiteListed(to),
+            "Illegal transfer to non white listed address!"
         );
+
+        require(to != from, "You can't transfer to your self");
+        require(value >= 0, "Value must be greater than zero");
+        require(from != address(0), "Can not transfer from zero address");
+        require(to != address(0), "Can not transfer to zero address");
+        require(balanceOf(from) >= value, "Not enough balance");
+
         _;
-    }
-
-    function validateTransferRestrict(
-        address to
-    ) public view returns (uint8 restrictionCode) {
-        if (!isWhiteListed(to)) {
-            return NON_WHITE_LIST_CODE;
-        }
-
-        return SUCCESS_CODE;
-    }
-
-    function messageHandler(
-        uint8 restrictionCode
-    ) public pure returns (string memory message) {
-        if (restrictionCode == SUCCESS_CODE) {
-            return SUCCESS_MESSAGE;
-        }
-
-        // if (restrictionCode == NON_WHITE_LIST_CODE) {
-        //     return NON_WHITE_LIST_ERROR;
-        // }
-
-        return NON_WHITE_LIST_ERROR;
     }
 
     function totalSupply() public view returns (uint256) {
@@ -222,12 +170,10 @@ contract MyERC20Token is ERC20, Owned, WhiteList, Pausable {
         uint256 value
     )
         public
-        verify(msg.sender, to, value)
+        verifyTransfer(msg.sender, to, value)
         whenNotPaused
         returns (bool success)
     {
-        require(to != address(0) && balances[msg.sender] > value);
-
         balances[msg.sender] -= value;
         balances[to] += value;
 
@@ -239,12 +185,13 @@ contract MyERC20Token is ERC20, Owned, WhiteList, Pausable {
         address from,
         address to,
         uint256 value
-    ) public verify(from, to, value) whenNotPaused returns (bool success) {
-        require(
-            to != address(0) &&
-                value <= balances[from] &&
-                value <= allowed[from][msg.sender]
-        );
+    )
+        public
+        verifyTransfer(from, to, value)
+        whenNotPaused
+        returns (bool success)
+    {
+        require(value <= allowed[from][msg.sender]);
 
         balances[from] -= value;
         balances[to] += value;
@@ -271,7 +218,13 @@ contract MyERC20Token is ERC20, Owned, WhiteList, Pausable {
     }
 
     function burn(uint256 value) public whenNotPaused onlyAdmin returns (bool) {
-        require(balances[msg.sender] >= value);
+        require(
+            balances[msg.sender] >= value,
+            "Value to burn is greater than address balance"
+        );
+
+        require(value >= 0, "Can't burn value <= 0");
+
         balances[msg.sender] -= value;
         _totalSupply -= value;
 
@@ -283,7 +236,9 @@ contract MyERC20Token is ERC20, Owned, WhiteList, Pausable {
         address account,
         uint256 value
     ) public whenNotPaused onlyAdmin returns (bool) {
-        require(account != address(0));
+        require(account != address(0), "Can not mint to zero address");
+        require(value > 0, "Can not mint value less or equal zero");
+
         balances[account] += value;
         _totalSupply += value;
 
