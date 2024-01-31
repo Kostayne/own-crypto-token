@@ -73,12 +73,12 @@ contract Pausable is Owned {
     }
 
     modifier whenNotPaused() {
-        require(!paused);
+        require(!paused, "Contract is paused");
         _;
     }
 
     modifier whenPaused() {
-        require(paused);
+        require(paused, "Contract is not paused");
         _;
     }
 
@@ -191,7 +191,7 @@ contract MyToken is ERC20, Owned, WhiteList, Pausable {
         whenNotPaused
         returns (bool success)
     {
-        require(value <= allowed[from][msg.sender]);
+        require(value <= allowed[from][msg.sender], "Not enough allowed value");
 
         balances[from] -= value;
         balances[to] += value;
@@ -210,7 +210,10 @@ contract MyToken is ERC20, Owned, WhiteList, Pausable {
     }
 
     function approve(address spender, uint256 value) public returns (bool) {
-        require(spender != address(0));
+        require(spender != address(0), "Can not approve zero address");
+        require(value > 0, "Can not approve value <= 0");
+        require(isWhiteListed(spender), "Spender is not white listed");
+
         allowed[msg.sender][spender] = value;
 
         emit Approval(msg.sender, spender, value);
@@ -238,6 +241,7 @@ contract MyToken is ERC20, Owned, WhiteList, Pausable {
     ) public whenNotPaused onlyAdmin returns (bool) {
         require(account != address(0), "Can not mint to zero address");
         require(value > 0, "Can not mint value less or equal zero");
+        require(isWhiteListed(account), "Account is not white listed");
 
         balances[account] += value;
         _totalSupply += value;

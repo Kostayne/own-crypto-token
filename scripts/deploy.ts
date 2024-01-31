@@ -5,7 +5,7 @@ async function main() {
 
   // Token cfg
   const initSum = 5000;
-  const initAddress = signers[0];
+  const initAddress = signers[0].address;
   const tokenName = 'Kostayne Token';
   const tokenSymbol = 'KST';
 
@@ -13,8 +13,8 @@ async function main() {
 
   await token.waitForDeployment();
   
-  console.log('Token deployed to:', token.address);
-  console.log(`Minted ${initSum}${tokenSymbol} to ${initAddress}`);
+  console.log('Token deployed to:', token.target);
+  console.log(`Minted ${initSum} ${tokenSymbol} to: ${initAddress}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
