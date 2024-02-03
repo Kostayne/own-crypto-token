@@ -10,10 +10,11 @@ async function main() {
   const tokenSymbol = 'KST';
 
   const token = await ethers.deployContract('MyToken', [tokenName, tokenSymbol, initAddress, initSum]);
+  const tokenAddr = await token.getAddress();
 
   await token.waitForDeployment();
   
-  console.log('Token deployed to:', token.target);
+  console.log('Token deployed to:', tokenAddr);
   console.log(`Minted ${initSum} ${tokenSymbol} to: ${initAddress}`);
 }
 

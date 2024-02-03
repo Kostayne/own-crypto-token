@@ -61,7 +61,7 @@ contract WhiteList is Owned {
     }
 }
 
-// Lock all tokens
+// Locks / unlocks all transactions
 contract Pausable is Owned {
     event PausedEvt(address account);
     event UnpausedEvt(address account);
@@ -93,7 +93,7 @@ contract Pausable is Owned {
     }
 }
 
-// actual implementation
+// actual token implementation
 contract MyToken is ERC20, Owned, WhiteList, Pausable {
     TokenSummary public tokenSummary;
 

@@ -22,6 +22,7 @@ interface ERC20 {
     ) external view returns (uint256);
 
     event TransferEvt(address indexed from, address indexed to, uint256 value);
+
     event ApprovalEvt(
         address indexed owner,
         address indexed spender,
