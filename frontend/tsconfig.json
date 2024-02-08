@@ -1,5 +1,6 @@
 {
 	"extends": "./.svelte-kit/tsconfig.json",
+
 	"compilerOptions": {
 		"allowJs": true,
 		"checkJs": true,
@@ -9,10 +10,12 @@
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"strict": true,
-		"moduleResolution": "bundler"
-	}
-	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
-	//
-	// If you want to overwrite includes/excludes, make sure to copy over the relevant includes/excludes
-	// from the referenced tsconfig.json - TypeScript does not merge them in
+		"moduleResolution": "bundler",
+
+		// for some reason paths in svelte.config are not always work in vscode
+		"paths": {
+			"@c/*": ["./src/components/*"],
+			"@icons/*": ["./src/components/icons/*"]
+		}
+	},
 }
