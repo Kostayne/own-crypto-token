@@ -19,9 +19,13 @@ export default {
       },
 
       colors: {
+        'awhite': '#FCFCFC',
         'primary': '#0098AD',
         'primary-dark': '#005662',
         'unfocused': '#70B4BD',
+
+        'btn-warning': '#F19A18',
+        'btn-danger': '#FF7D7D',
       },
     },
   },

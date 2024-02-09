@@ -8,14 +8,10 @@
 	import UserActionsList from './_components/UserActionsList.svelte';
 	import AdminActionsList from './_components/AdminActionsList.svelte';
 
-	// TODO load used addresses
 	const addresses: string[] = ['0x0123456789', '0x123456789', '0x23456789', '0x3456789'];
-
-	// const unfocusedColor = '#70B4BD';
-	// const primaryColor = '#0098AD';
 </script>
 
-<main class="p-4 flex flex-col items-center">
+<main class="flex flex-col items-center">
 	<span class="font-medium">{tokenName}</span>
 	<span class="font-medium text-[0.8rem]">Total supply: 500KST</span>
 

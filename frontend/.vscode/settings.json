@@ -1,3 +1,8 @@
 {
-    "editor.defaultFormatter": "svelte.svelte-vscode"
+    "editor.defaultFormatter": "svelte.svelte-vscode",
+    "cSpell.words": [
+        "awhite",
+        "Kreepto",
+        "wordlist"
+    ]
 }

@@ -36,7 +36,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@scure/bip39": "^1.2.2",
 		"get-module-style": "^4.0.3",
+		"svelte-loading-spinners": "^0.3.4",
 		"svelte-select": "^5.8.3"
 	}
 }
