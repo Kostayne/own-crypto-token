@@ -18,6 +18,10 @@ export default {
         'text-base': '16px',
       },
 
+      screens: {
+        xsm2: '350px',
+      },
+
       colors: {
         'awhite': '#FCFCFC',
         'primary': '#0098AD',
