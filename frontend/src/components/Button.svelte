@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { gs } from 'get-module-style';
 	import { onMount } from 'svelte';
-
+	import { gs } from 'get-module-style';
 	import { Clock } from 'svelte-loading-spinners';
 
 	type ButtonType = 'primary' | 'secondary' | 'warning' | 'error';
@@ -47,7 +46,7 @@
 		'relative',
 
 		{
-			'bg-primary': type === 'primary',
+			'bg-primary disabled:bg-primary-dark': type === 'primary',
 			'bg-primary-dark': type === 'secondary',
 			'bg-btn-warning': type === 'warning',
 			'bg-btn-danger': type === 'error',
