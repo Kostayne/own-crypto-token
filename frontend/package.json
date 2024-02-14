@@ -36,6 +36,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@metamask/browser-passworder": "^4.3.0",
 		"@scure/bip39": "^1.2.2",
 		"get-module-style": "^4.0.3",
 		"svelte-loading-spinners": "^0.3.4",

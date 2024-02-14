@@ -1,17 +1,35 @@
 <script lang="ts">
+	import { getContext } from 'svelte';
+	import { goto } from '$app/navigation';
+
+	// c
 	import Button from '@c/Button.svelte';
 	import TextButton from '@c/TextButton.svelte';
-	import WordsInput from './_components/WordsInput.svelte';
+	import WordsInput from './components/WordsInput.svelte';
 
+	// types
+	import type { InitData } from '@t/initData.type';
+
+	// state
 	let importedWordsAreValid = false;
 	let importedWords: string[] = new Array(12).fill('');
+
+	const initData: InitData = getContext('initData');
 
 	// component refs
 	let wordsInputRef: WordsInput;
 
 	function onImportExistingClick() {
-		// valid case
-		alert('Importing address...');
+		// user can enable btn with inspector, so additional check is useful
+		if (!importedWordsAreValid) {
+			return;
+		}
+
+		// saving seed phrase as a string
+		initData.seedPhrase = importedWords.join(' ');
+
+		// redirecting to set pass phase
+		goto('/welcome/set_password');
 	}
 </script>
 

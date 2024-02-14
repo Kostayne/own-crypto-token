@@ -15,7 +15,9 @@
 		// for some reason paths in svelte.config are not always work in vscode
 		"paths": {
 			"@c/*": ["./src/components/*"],
-			"@icons/*": ["./src/components/icons/*"]
+			"@icons/*": ["./src/components/icons/*"],
+			"@utils/*": ["./src/utils/*"],
+			"@t/*": ["./src/types/*"]
 		}
 	},
 }

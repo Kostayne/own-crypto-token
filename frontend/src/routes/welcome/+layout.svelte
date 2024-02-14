@@ -1,6 +1,17 @@
-<h1 class="w-fit mx-auto text-[23px] font-medium">
-	Welcome to <span class="text-primary">Kreepto</span>
-</h1>
+<script lang="ts">
+	import { setContext } from 'svelte';
+	import { writable } from 'svelte/store';
+
+	// c
+	import WelcomeText from '@c/WelcomeText.svelte';
+	import type { InitData } from '@t/initData.type';
+
+	// create initData store & ctx
+	const initData = writable<InitData>({});
+	setContext('initData', initData);
+</script>
+
+<WelcomeText />
 
 <main>
 	<div class="flex flex-col mt-5">

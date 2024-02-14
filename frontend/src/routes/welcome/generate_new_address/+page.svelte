@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { getContext, onMount } from 'svelte';
 
 	// utils
 	import { generateMnemonicWords } from './utils/generateMnemonicWords';
@@ -10,11 +11,16 @@
 	import WordsList from './components/WordsList.svelte';
 	import MnemonicsWarningModal from './components/MnemonicsWarningModal.svelte';
 
+	// types
+	import type { InitData } from '@t/initData.type';
+
 	// state
 	let generatedWords = generateMnemonicWords();
 
 	// before generating new address, we need to show a modal to user,
 	let isShowingMnemonicsWarning = false;
+
+	const initData: InitData = getContext('initData');
 
 	onMount(() => {
 		// showing mnemonics warning
@@ -27,8 +33,16 @@
 	});
 
 	function onGenerateNewAddressClick() {
-		// TODO complete new address setup
-		alert('Done!');
+		// in case that we actually did not generate any words
+		if (generatedWords.length !== 12) {
+			return;
+		}
+
+		// saving seed phrase as str
+		initData.seedPhrase = generatedWords.join(' ');
+
+		// redirecting to set password step
+		goto('/welcome/set_password');
 	}
 </script>
 

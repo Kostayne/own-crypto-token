@@ -11,7 +11,7 @@
 	export let disabled = disableTime > 0;
 
 	onMount(() => {
-		// disable button for some time
+		// disable button for some time if needed
 		if (disableTime > 0) {
 			const i = setInterval(() => {
 				disableTime -= 1;
@@ -43,7 +43,7 @@
 		`py-[8px] px-4 rounded-[4px] text-awhite`,
 		'font-semibold text-[14px] transition',
 		'hover:saturate-[1.5] disabled:saturate-[0.85]',
-		'relative',
+		'relative max-w-[280px]',
 
 		{
 			'bg-primary disabled:bg-primary-dark': type === 'primary',
