@@ -11,6 +11,10 @@
 	const addresses: string[] = ['0x0123456789', '0x123456789', '0x23456789', '0x3456789'];
 </script>
 
+<svelte:head>
+	<title>Kreepto wallet</title>
+</svelte:head>
+
 <main class="flex flex-col items-center">
 	<span class="font-medium">{tokenName}</span>
 	<span class="font-medium text-[0.8rem]">Total supply: 500KST</span>

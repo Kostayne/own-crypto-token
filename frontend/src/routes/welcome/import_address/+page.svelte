@@ -33,6 +33,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Import address</title>
+</svelte:head>
+
 <WordsInput
 	on:validated={(e) => {
 		importedWordsAreValid = e.detail;

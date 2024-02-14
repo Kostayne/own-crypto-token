@@ -52,6 +52,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Set Kreepto pass</title>
+</svelte:head>
+
 <main class="mx-auto max-w-[280px] flex flex-col">
 	<p class="text-center">Create a password that will secure your seed phrase</p>
 

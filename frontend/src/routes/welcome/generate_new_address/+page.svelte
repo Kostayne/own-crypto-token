@@ -46,6 +46,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Generate new address</title>
+</svelte:head>
+
 <WordsList className="mx-auto mb-6" addresses={generatedWords} />
 
 {#if isShowingMnemonicsWarning}
