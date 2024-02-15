@@ -60,10 +60,12 @@
 	<p class="text-center">Create a password that will secure your seed phrase</p>
 
 	<Input
+		type="password"
 		error={passwordErr}
 		className="mt-6"
 		value={password}
-		name="Password"
+		label="Password"
+		autocomplete="new-password"
 		on:change={(e) => {
 			password = e.detail;
 			passwordErr = validatePassword(e.detail);
@@ -74,10 +76,12 @@
 	/>
 
 	<Input
+		type="password"
 		error={confirmErr}
 		className="mt-3"
 		value={confirm}
-		name="Repeat password"
+		label="Repeat password"
+		autocomplete="new-password"
 		on:change={(e) => {
 			confirm = e.detail;
 			confirmErr = validatePasswordConfirm(e.detail, password);

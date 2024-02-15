@@ -6,17 +6,21 @@
 	type Validator = (value: string) => string;
 
 	// props
-	export let name = '';
+	export let label = '';
 	export let className = '';
 	export let value = '';
 	export let placeholder = '';
+	export let type: 'text' | 'password' = 'text';
 	export let error: string | boolean = false;
+	export let name = label;
+	export let autocomplete = '';
+
 	export let validator: Validator | undefined = undefined;
 
 	const dispatchEvent = createEventDispatcher();
 
 	// computed
-	$: resultName = !error ? name : `${name} | ${error}`;
+	$: resultName = !error ? label : `${label} | ${error}`;
 
 	// event handlers
 	function validate() {
@@ -41,6 +45,9 @@
 	<input
 		bind:value
 		{placeholder}
+		{autocomplete}
+		{...{ type }}
+		{name}
 		on:input={() => {
 			validate();
 			dispatchEvent('change', value);
