@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { getContext, onMount } from 'svelte';
 
 	// c
@@ -6,11 +7,12 @@
 	import Button from '@c/Button.svelte';
 
 	// types
+	import type { Writable } from 'svelte/store';
 	import type { InitData } from '@t/initData.type';
 
 	// utils
 	import { validatePassword, validatePasswordConfirm } from '@utils/passwordValidator';
-	import { goto } from '$app/navigation';
+	import { saveSeedPhrase } from '@utils/seedPhraseStore';
 
 	// state
 	let password = '';
@@ -18,32 +20,43 @@
 	let confirm = '';
 	let confirmErr = '';
 
-	const initData: InitData = getContext('initData');
+	const initData = getContext<Writable<InitData>>('initData');
 
 	// event listeners
-	function onSetPasswordClick() {
+	async function onSetPasswordClick() {
 		// validation check
 		if (passwordErr || confirmErr) {
 			return;
 		}
 
 		// if some how we not have seed phrase redirect user
-		if (!initData.seedPhrase) {
+		if (!$initData.seedPhrase) {
 			goto('/welcome');
+			return;
 		}
 
 		// saving password
-		initData.password = password;
+		$initData = { ...$initData, password };
 
-		// TODO encrypt seed phrase
-		// TODO generate wallet info
-		// TODO redir user to home page
+		try {
+			console.log(`Seed phrase`, $initData.seedPhrase);
+
+			// saving it
+			saveSeedPhrase($initData.seedPhrase as string, password);
+
+			// redirect to home
+			goto('/');
+		} catch (e) {
+			console.error(e);
+			alert('Failed to encrypt your seed with a password, details in console.');
+			return;
+		}
 	}
 
 	// hooks
 	onMount(() => {
 		// seed phrase must be already set, otherwise redirect user
-		if (!initData.seedPhrase) {
+		if (!$initData.seedPhrase) {
 			goto('/welcome');
 		}
 

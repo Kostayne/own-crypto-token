@@ -16,6 +16,7 @@
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
+		"@types/crypto-js": "^4.2.2",
 		"@types/eslint": "8.56.0",
 		"@typescript-eslint/eslint-plugin": "^6.0.0",
 		"@typescript-eslint/parser": "^6.0.0",
@@ -36,8 +37,8 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@metamask/browser-passworder": "^4.3.0",
-		"@scure/bip39": "^1.2.2",
+		"crypto-js": "^4.2.0",
+		"ethers": "^6.11.1",
 		"get-module-style": "^4.0.3",
 		"svelte-loading-spinners": "^0.3.4",
 		"svelte-select": "^5.8.3"

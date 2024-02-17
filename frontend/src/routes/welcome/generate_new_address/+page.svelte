@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { getContext, onMount } from 'svelte';
-
-	// utils
-	import { generateMnemonicWords } from './utils/generateMnemonicWords';
+	import { Wallet } from 'ethers';
 
 	// c
 	import Button from '@c/Button.svelte';
@@ -13,17 +11,28 @@
 
 	// types
 	import type { InitData } from '@t/initData.type';
+	import type { Writable } from 'svelte/store';
 
 	// state
-	let generatedWords = generateMnemonicWords();
+	let generatedWords: string[] = [];
 
 	// before generating new address, we need to show a modal to user,
 	let isShowingMnemonicsWarning = false;
 
-	const initData: InitData = getContext('initData');
+	const initData = getContext<Writable<InitData>>('initData');
 
 	onMount(() => {
-		// showing mnemonics warning
+		// generating an hd wallet
+		const generatedWallet = Wallet.createRandom();
+
+		if (!generatedWallet.mnemonic) {
+			throw new Error('Generated a wallet without mnemonic!');
+		}
+
+		// setting mnemonics words
+		generatedWords = generatedWallet.mnemonic.phrase.split(' ');
+
+		// showing mnemonics warning if needed
 		const key = 'kreepto_showed_mnemonics_warning';
 
 		if (sessionStorage.getItem(key) !== 'true') {
@@ -33,13 +42,13 @@
 	});
 
 	function onGenerateNewAddressClick() {
-		// in case that we actually did not generate any words
-		if (generatedWords.length !== 12) {
-			return;
+		// in case that we actually did not generate a wallet
+		if (generatedWords?.length !== 12) {
+			throw new Error('Generated words length invalid!');
 		}
 
-		// saving seed phrase as str
-		initData.seedPhrase = generatedWords.join(' ');
+		// saving seed phrase as str in context
+		initData.set({ seedPhrase: generatedWords.join(' ') });
 
 		// redirecting to set password step
 		goto('/welcome/set_password');
@@ -50,7 +59,9 @@
 	<title>Generate new address</title>
 </svelte:head>
 
-<WordsList className="mx-auto mb-6" addresses={generatedWords} />
+{#if generatedWords.length > 0}
+	<WordsList className="mx-auto mb-6" addresses={generatedWords} />
+{/if}
 
 {#if isShowingMnemonicsWarning}
 	<MnemonicsWarningModal on:close={() => (isShowingMnemonicsWarning = false)} />

@@ -20,6 +20,8 @@ const config = {
 			'@t': './src/types',
 		},
 	},
+
+	
 };
 
 export default config;

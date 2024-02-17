@@ -1,5 +1,11 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { getContext, onMount } from 'svelte';
 	import Select from 'svelte-select';
+
+	// types
+	import type { HDNodeWallet } from 'ethers';
+	import type { Writable } from 'svelte/store';
 
 	// cfg
 	import { tokenName, tokenSymbol } from '../cfg';
@@ -8,7 +14,40 @@
 	import UserActionsList from './_components/UserActionsList.svelte';
 	import AdminActionsList from './_components/AdminActionsList.svelte';
 
+	// utils
+	import { loadRawSeedPhrase, loadSeedPhrase } from '@utils/seedPhraseStore';
+
+	// TODO load addresses
 	const addresses: string[] = ['0x0123456789', '0x123456789', '0x23456789', '0x3456789'];
+	const wallet = getContext<Writable<HDNodeWallet>>('wallet');
+
+	const unsubscribeFromWallet = wallet.subscribe((updatedWallet) => {
+		// handling sign out
+		if (!updatedWallet) {
+			goto('/login');
+			return;
+		}
+	});
+
+	// hooks
+	onMount(() => {
+		// redirect to welcome page if user has not a seed phrase
+		if (!loadRawSeedPhrase()) {
+			goto('/welcome');
+			return;
+		}
+
+		// redirect to login page if no wallet
+		if (!$wallet) {
+			goto('/login');
+			return;
+		}
+
+		// clear
+		return () => {
+			unsubscribeFromWallet();
+		};
+	});
 </script>
 
 <svelte:head>

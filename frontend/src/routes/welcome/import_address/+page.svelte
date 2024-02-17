@@ -8,13 +8,15 @@
 	import WordsInput from './components/WordsInput.svelte';
 
 	// types
+	import type { Writable } from 'svelte/store';
 	import type { InitData } from '@t/initData.type';
+	import { Mnemonic } from 'ethers';
 
 	// state
 	let importedWordsAreValid = false;
 	let importedWords: string[] = new Array(12).fill('');
 
-	const initData: InitData = getContext('initData');
+	const initData = getContext<Writable<InitData>>('initData');
 
 	// component refs
 	let wordsInputRef: WordsInput;
@@ -25,8 +27,17 @@
 			return;
 		}
 
-		// saving seed phrase as a string
-		initData.seedPhrase = importedWords.join(' ');
+		// creating a wallet from a seed phrase
+		const seedPhrase = importedWords.join(' ');
+
+		// validating seed phrase
+		if (!Mnemonic.isValidMnemonic(seedPhrase)) {
+			alert('Your seed phrase is not valid!');
+			return;
+		}
+
+		// saving seed phrase
+		initData.set({ seedPhrase });
 
 		// redirecting to set pass phase
 		goto('/welcome/set_password');
