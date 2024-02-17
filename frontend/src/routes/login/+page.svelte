@@ -10,7 +10,6 @@
 
 	// types
 	import type { Writable } from 'svelte/store';
-	import type { EncryptedData } from '@t/encryptedData.type';
 
 	// utils
 	import { loadRawSeedPhrase, loadSeedPhrase } from '@utils/seedPhraseStore';
@@ -40,21 +39,20 @@
 			return;
 		}
 
-		// loading seed phrase
-		const seedPhrase = loadSeedPhrase(password);
-
-		// redir to welcome if no secret phrase
-		if (!seedPhrase) {
+		// redir to welcome if no secret phrase stored
+		if (!loadRawSeedPhrase) {
 			goto('/welcome');
 			return;
 		}
 
+		// loading seed phrase
+		const seedPhrase = loadSeedPhrase(password);
+
 		// generating a wallet
 		try {
-			wallet.set(Wallet.fromPhrase(seedPhrase));
+			wallet.set(Wallet.fromPhrase(seedPhrase as string));
 		} catch (e) {
-			console.error(e);
-			// TODO add invalid password error span with condition
+			passwordErr = 'Invalid password';
 			return;
 		}
 
@@ -74,11 +72,12 @@
 		className="mt-6"
 		label="Password"
 		value={password}
+		error={passwordErr}
 		on:change={(e) => {
 			password = e.detail;
 			passwordErr = validatePassword(e.detail);
 		}}
 	/>
 
-	<Button on:click={onLoginClick} className="mt-3" disabled={passwordErr !== ''}>Login</Button>
+	<Button on:click={onLoginClick} className="mt-3" disabled={!!passwordErr}>Login</Button>
 </main>
