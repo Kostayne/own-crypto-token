@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { getContext, onMount } from 'svelte';
-	import { HDNodeWallet, Wallet } from 'ethers';
+	import { HDNodeWallet } from 'ethers';
 
 	// c
 	import Button from '@c/Button.svelte';
@@ -10,21 +10,24 @@
 
 	// types
 	import type { Writable } from 'svelte/store';
+	import type { EncryptedData } from '@t/encryptedData.type';
 
 	// utils
-	import { loadRawSeedPhrase, loadSeedPhrase } from '@utils/seedPhraseStore';
+	import { loadEncryptedDataRaw, loadEncryptedData } from '@utils/seedPhraseStore';
 	import { validatePassword } from '@utils/passwordValidator';
 
 	// state
 	let password = '';
 	let passwordErr = '';
 
-	let wallet = getContext<Writable<HDNodeWallet>>('wallet');
+	// global state
+	const walletStore = getContext<Writable<HDNodeWallet>>('wallet');
+	const encryptedStore = getContext<Writable<EncryptedData>>('encrypted');
 
 	// hooks
 	onMount(() => {
 		// return to welcome if there is no seed phrase
-		if (!loadRawSeedPhrase()) {
+		if (!loadEncryptedDataRaw()) {
 			goto('/welcome');
 			return;
 		}
@@ -40,19 +43,29 @@
 		}
 
 		// redir to welcome if no secret phrase stored
-		if (!loadRawSeedPhrase) {
+		if (!loadEncryptedDataRaw) {
 			goto('/welcome');
 			return;
 		}
 
-		// loading seed phrase
-		const seedPhrase = loadSeedPhrase(password);
+		// loading encrypted data
+		let encryptedData: EncryptedData;
 
-		// generating a wallet
 		try {
-			wallet.set(Wallet.fromPhrase(seedPhrase as string));
+			encryptedData = loadEncryptedData(password);
+			encryptedStore.set(encryptedData);
 		} catch (e) {
 			passwordErr = 'Invalid password';
+			return;
+		}
+
+		// setting a wallet
+		try {
+			const seedPhrase = encryptedData.seedPhrase as string;
+			walletStore.set(HDNodeWallet.fromPhrase(seedPhrase));
+		} catch (e) {
+			console.error(e);
+			alert('Loaded seed phrase is invalid!');
 			return;
 		}
 

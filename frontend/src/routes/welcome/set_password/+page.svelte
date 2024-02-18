@@ -7,12 +7,14 @@
 	import Button from '@c/Button.svelte';
 
 	// types
+	import { HDNodeWallet } from 'ethers';
 	import type { Writable } from 'svelte/store';
 	import type { InitData } from '@t/initData.type';
+	import type { EncryptedData } from '@t/encryptedData.type';
 
 	// utils
 	import { validatePassword, validatePasswordConfirm } from '@utils/passwordValidator';
-	import { saveSeedPhrase } from '@utils/seedPhraseStore';
+	import { saveEncryptedData } from '@utils/seedPhraseStore';
 
 	// state
 	let password = '';
@@ -21,6 +23,7 @@
 	let confirmErr = '';
 
 	const initData = getContext<Writable<InitData>>('initData');
+	const wallet = getContext<Writable<HDNodeWallet>>('wallet');
 
 	// event listeners
 	async function onSetPasswordClick() {
@@ -39,10 +42,21 @@
 		$initData = { ...$initData, password };
 
 		try {
-			console.log(`Seed phrase`, $initData.seedPhrase);
+			// generating an hd wallet from seed phrase
+			const seedPhrase = $initData.seedPhrase as string;
+			wallet.set(HDNodeWallet.fromPhrase(seedPhrase));
 
-			// saving it
-			saveSeedPhrase($initData.seedPhrase as string, password);
+			// setting encrypted data
+			const data: EncryptedData = {
+				childAccounts: [],
+				seedPhrase: $initData.seedPhrase as string,
+
+				connectionData: {
+					type: 'API',
+				},
+			};
+
+			saveEncryptedData(data, password);
 
 			// redirect to home
 			goto('/');

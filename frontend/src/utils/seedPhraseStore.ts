@@ -1,17 +1,19 @@
+import type { EncryptedData } from "@t/encryptedData.type";
 import CryptoJS from "crypto-js";
 
 const key = 'kreepto_wallet_encrypted';
 
-export function saveSeedPhrase(seedPhrase: string, password: string) {
-    const encrypted = CryptoJS.AES.encrypt(seedPhrase, password).toString();
+export function saveEncryptedData(data: EncryptedData, password: string) {
+    const json = JSON.stringify(data);
+    const encrypted = CryptoJS.AES.encrypt(json, password).toString();
     localStorage.setItem(key, encrypted);;
 }
 
-export function loadRawSeedPhrase() {
+export function loadEncryptedDataRaw() {
     return localStorage.getItem(key);
 }
 
-export function loadSeedPhrase(password: string) {
+export function loadEncryptedData(password: string) {
     const encrypted = localStorage.getItem(key);
 
     if (!encrypted) {
@@ -19,5 +21,7 @@ export function loadSeedPhrase(password: string) {
     }
 
     const decrypted = CryptoJS.AES.decrypt(encrypted, password);
-    return decrypted.toString(CryptoJS.enc.Utf8);
+    const decryptedJson = decrypted.toString(CryptoJS.enc.Utf8);
+
+    return JSON.parse(decryptedJson);
 }

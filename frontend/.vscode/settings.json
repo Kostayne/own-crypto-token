@@ -1,6 +1,7 @@
 {
     "editor.defaultFormatter": "svelte.svelte-vscode",
     "cSpell.words": [
+        "ankr",
         "awhite",
         "Kreepto",
         "passworder",

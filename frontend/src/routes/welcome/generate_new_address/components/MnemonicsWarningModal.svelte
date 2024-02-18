@@ -11,7 +11,7 @@
 <Modal title="WARNING" type="warning" formClassName="!max-w-[350px]">
 	<p>Write down generated keys, if you lose them all funds will be lost!</p>
 
-	<Button disableTime={3} on:click={() => dispatch('close')} className="mt-6 w-full" type="warning">
+	<Button disableTime={1} on:click={() => dispatch('close')} className="mt-6 w-full" type="warning">
 		GOT IT
 	</Button>
 </Modal>

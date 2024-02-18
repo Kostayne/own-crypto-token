@@ -4,8 +4,8 @@
 	import Select from 'svelte-select';
 
 	// types
-	import type { HDNodeWallet } from 'ethers';
 	import type { Writable } from 'svelte/store';
+	import type { EncryptedData } from '@t/encryptedData.type';
 
 	// cfg
 	import { tokenName, tokenSymbol } from '../cfg';
@@ -15,15 +15,28 @@
 	import AdminActionsList from './_components/AdminActionsList.svelte';
 
 	// utils
-	import { loadRawSeedPhrase, loadSeedPhrase } from '@utils/seedPhraseStore';
+	import { loadEncryptedDataRaw } from '@utils/seedPhraseStore';
+	import type { HDNodeWallet } from 'ethers';
 
+	// state
 	// TODO load addresses
 	const addresses: string[] = ['0x0123456789', '0x123456789', '0x23456789', '0x3456789'];
-	const wallet = getContext<Writable<HDNodeWallet>>('wallet');
 
-	const unsubscribeFromWallet = wallet.subscribe((updatedWallet) => {
+	// global state
+	const walletStore = getContext<Writable<HDNodeWallet>>('wallet');
+	const encryptedStore = getContext<Writable<EncryptedData>>('encrypted');
+
+	const unsubscribeFromEncryptedData = encryptedStore.subscribe((updatedData) => {
 		// handling sign out
-		if (!updatedWallet) {
+		if (!updatedData) {
+			goto('/login');
+			return;
+		}
+	});
+
+	const unsubscribeFromWallet = encryptedStore.subscribe((updWallet) => {
+		// handling sign out
+		if (!updWallet) {
 			goto('/login');
 			return;
 		}
@@ -31,14 +44,16 @@
 
 	// hooks
 	onMount(() => {
-		// redirect to welcome page if user has not a seed phrase
-		if (!loadRawSeedPhrase()) {
+		// redirect to welcome page if data is not stored
+		if (!loadEncryptedDataRaw()) {
 			goto('/welcome');
 			return;
 		}
 
-		// redirect to login page if no wallet
-		if (!$wallet) {
+		// redirect to login page if data not decrypted
+		if (!$encryptedStore || !$walletStore) {
+			console.log(`encrypted`, $encryptedStore);
+			console.log(`wallet`, $walletStore);
 			goto('/login');
 			return;
 		}
@@ -46,6 +61,7 @@
 		// clear
 		return () => {
 			unsubscribeFromWallet();
+			unsubscribeFromEncryptedData();
 		};
 	});
 </script>
