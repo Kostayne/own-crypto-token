@@ -10,6 +10,7 @@
 
 	// svgs
 	import ChevronSvg from '@icons/chevron.svg?component';
+	import TextButton from '@c/buttons/TextButton.svelte';
 
 	// props
 	export let className = '';
@@ -35,10 +36,15 @@
 	on:click={() => (isOpened = !isOpened)}
 	role="listbox"
 	tabindex="0"
-	class={gs(className, 'flex flex-col bg-whiteContrast cursor-pointer', 'rounded-[3px]')}
+	class={gs(className, 'flex flex-col bg-whiteContrast cursor-pointer')}
 >
 	<!-- horizontal -->
-	<div class={gs('flex items-center w-full p-2 group hover:bg-gray-200 transition gap-x-2')}>
+	<div
+		class={gs(
+			'flex items-center w-full p-2',
+			'group hover:bg-gray-200 transition gap-x-2 rounded-md',
+		)}
+	>
 		{#if !selectedAccount}
 			<span class={gs('text-gray-600 text-[14px] font-light')}>No account selected</span>
 
@@ -47,7 +53,7 @@
 
 		<!-- selected option -->
 		{#if selectedAccount}
-			<AccountPreview className="p-0 group-hover:bg-gray-200 transition" data={selectedAccount} />
+			<AccountPreview className="!p-0 group-hover:bg-gray-200 transition" data={selectedAccount} />
 
 			<ChevronSvg class="ml-auto stroke-blue" />
 		{/if}
@@ -56,12 +62,28 @@
 	<!-- options list -->
 	<div class="relative w-full">
 		{#if isOpened}
-			<div class={gs('absolute left-0 right-0 top-3', 'flex flex-col gap-2')}>
+			<div
+				class={gs(
+					'absolute left-0 right-0 top-3',
+					'flex flex-col gap-2',
+					'bg-white pb-2 rounded-b-sm',
+				)}
+			>
+				<!-- options -->
 				{#each notSelectedAccounts as acc}
 					<button on:click={() => onItemSelect(acc.address)}>
 						<AccountPreview className={gs('hover:bg-gray-200 transition')} data={acc} />
 					</button>
 				{/each}
+
+				<!-- manage accounts btn -->
+				<TextButton
+					type="alternative"
+					className={gs('font-medium text-[14px]')}
+					on:click={() => dispatch('clickedManage')}
+				>
+					Manage accounts
+				</TextButton>
 			</div>
 		{/if}
 	</div>

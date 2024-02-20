@@ -19,10 +19,6 @@
 	import type { HDNodeWallet } from 'ethers';
 	import AccountSelect from './_components/AccountSelect.svelte';
 
-	// state
-	// TODO load addresses
-	const addresses: string[] = ['0x0123456789', '0x123456789', '0x23456789', '0x3456789'];
-
 	// global state
 	const walletStore = getContext<Writable<HDNodeWallet>>('wallet');
 	const encryptedStore = getContext<Writable<EncryptedData>>('encrypted');

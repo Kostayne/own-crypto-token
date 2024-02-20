@@ -2,7 +2,7 @@
 	import { gs } from 'get-module-style';
 
 	export let className = '';
-	export let type: 'primary' | 'secondary' | 'warning' | 'error' = 'primary';
+	export let type: 'primary' | 'alternative' | 'secondary' | 'warning' | 'error' = 'primary';
 </script>
 
 <button
@@ -12,6 +12,7 @@
 		'text-primary-dark': type === 'secondary',
 		'text-btn-warning': type === 'warning',
 		'text-btn-danger': type === 'error',
+		'text-blue': type === 'alternative',
 	})}
 >
 	<slot />
