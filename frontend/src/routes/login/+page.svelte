@@ -4,7 +4,7 @@
 	import { HDNodeWallet } from 'ethers';
 
 	// c
-	import Button from '@c/Button.svelte';
+	import Button from '@c/buttons/Button.svelte';
 	import Input from '@c/Input.svelte';
 	import WelcomeText from '@c/WelcomeText.svelte';
 

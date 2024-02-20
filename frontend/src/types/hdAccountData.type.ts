@@ -1,4 +1,4 @@
-export interface HDAccount {
+export interface HDAccountData {
     index: number;
     name: string;
 }

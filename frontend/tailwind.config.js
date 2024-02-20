@@ -24,12 +24,16 @@ export default {
 
       colors: {
         'awhite': '#FCFCFC',
+        'whiteContrast': '#F8F8F8',
+
         'primary': '#0098AD',
         'primary-dark': '#005662',
         'unfocused': '#70B4BD',
 
         'btn-warning': '#F19A18',
         'btn-danger': '#FF7D7D',
+
+        'blue': '#029EF5',
       },
     },
   },

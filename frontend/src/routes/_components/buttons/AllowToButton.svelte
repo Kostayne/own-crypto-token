@@ -1,8 +1,8 @@
 <script>
-	import IconButton from "@c/IconButton.svelte";
-    import AllowToSvg from '@icons/allow-to.svg?component';
+	import IconButton from '@c/buttons/RoundIconButton.svelte';
+	import AllowToSvg from '@icons/allow-to.svg?component';
 </script>
 
 <IconButton name="Allow to">
-    <AllowToSvg />
+	<AllowToSvg />
 </IconButton>

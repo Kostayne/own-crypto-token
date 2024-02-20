@@ -1,8 +1,8 @@
 <script>
-	import IconButton from "@c/IconButton.svelte";
-    import BalanceOfSvg from '@icons/balance.svg?component';
+	import IconButton from '@c/buttons/RoundIconButton.svelte';
+	import BalanceOfSvg from '@icons/balance.svg?component';
 </script>
 
 <IconButton name="Balance of">
-    <BalanceOfSvg />
+	<BalanceOfSvg />
 </IconButton>

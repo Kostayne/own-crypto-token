@@ -4,7 +4,7 @@
 	import { Wallet } from 'ethers';
 
 	// c
-	import Button from '@c/Button.svelte';
+	import Button from '@c/buttons/Button.svelte';
 	import TextButton from '@c/TextButton.svelte';
 	import WordsList from './components/WordsList.svelte';
 	import MnemonicsWarningModal from './components/MnemonicsWarningModal.svelte';

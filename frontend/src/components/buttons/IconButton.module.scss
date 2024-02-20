@@ -1,0 +1,18 @@
+// tailwind can't adequately write selectors below,
+// so i wrote them in scss
+
+.fill {
+    &:hover {
+        path, svg {
+            fill: #FCFCFC;
+        }
+    }
+}
+
+.btn_stroke {
+    &:hover {
+        path, svg {
+            stroke: #FCFCFC;
+        }
+    }
+}

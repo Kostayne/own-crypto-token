@@ -4,7 +4,7 @@
 
 	// c
 	import Input from '@c/Input.svelte';
-	import Button from '@c/Button.svelte';
+	import Button from '@c/buttons/Button.svelte';
 
 	// types
 	import { HDNodeWallet } from 'ethers';

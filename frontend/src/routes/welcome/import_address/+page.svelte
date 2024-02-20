@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 
 	// c
-	import Button from '@c/Button.svelte';
+	import Button from '@c/buttons/Button.svelte';
 	import TextButton from '@c/TextButton.svelte';
 	import WordsInput from './components/WordsInput.svelte';
 

@@ -17,6 +17,7 @@
 	// utils
 	import { loadEncryptedDataRaw } from '@utils/seedPhraseStore';
 	import type { HDNodeWallet } from 'ethers';
+	import AccountSelect from './_components/AccountSelect.svelte';
 
 	// state
 	// TODO load addresses
@@ -78,17 +79,7 @@
 	<span class="mt-6 text-[23px] font-semibold text-primary">500 {tokenSymbol}</span>
 
 	<!-- TODO address selector -->
-	<div class="mt-1">
-		<Select
-			placeholder="Select an address"
-			value={addresses[0]}
-			items={addresses}
-			clearable={false}
-			showChevron={true}
-			searchable={false}
-			class="max-w-[200px]"
-		/>
-	</div>
+	<AccountSelect className="mt-1" />
 
 	<!-- user actions -->
 	<UserActionsList className="mt-6" />

@@ -1,8 +1,8 @@
 <script>
-	import IconButton from "@c/IconButton.svelte";
-    import EmitSvg from '@icons/emit.svg?component';
+	import IconButton from '@c/buttons/RoundIconButton.svelte';
+	import EmitSvg from '@icons/emit.svg?component';
 </script>
 
 <IconButton name="Emit">
-    <EmitSvg />
+	<EmitSvg />
 </IconButton>

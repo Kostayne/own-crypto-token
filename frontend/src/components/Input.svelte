@@ -57,9 +57,4 @@
 			`${error ? 'border-red-500 outline-red-500' : 'border-primary outline-primary'}`,
 		)}
 	/>
-
-	<!-- display error message -->
-	<!-- {#if typeof error === 'string' && error !== ''}
-		<span class="mt-1 text-[12px] text-red-500">{error}</span>
-	{/if} -->
 </label>

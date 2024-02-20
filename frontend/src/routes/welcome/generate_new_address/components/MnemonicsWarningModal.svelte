@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from 'svelte';
 
 	// c
-	import Button from '@c/Button.svelte';
+	import Button from '@c/buttons/Button.svelte';
 	import Modal from '@c/Modal.svelte';
 
 	const dispatch = createEventDispatcher();
