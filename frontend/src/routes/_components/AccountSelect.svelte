@@ -72,7 +72,7 @@
 				<!-- options -->
 				{#each notSelectedAccounts as acc}
 					<button on:click={() => onItemSelect(acc.address)}>
-						<AccountPreview className={gs('hover:bg-gray-200 transition')} data={acc} />
+						<AccountPreview className={gs('hover:bg-gray-200 transition')} data={acc} manageable />
 					</button>
 				{/each}
 

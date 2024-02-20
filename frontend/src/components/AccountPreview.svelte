@@ -30,7 +30,15 @@
 
 	{#if manageable}
 		<div class="ml-auto flex items-center gap-1">
-			<IconButton className="w-5" name="edit" color="blue" on:click={() => dispatch('edit')}>
+			<IconButton
+				className="w-5"
+				name="edit"
+				color="blue"
+				on:click={(e) => {
+					dispatch('edit');
+					e.stopPropagation();
+				}}
+			>
 				<EditSvg />
 			</IconButton>
 
@@ -39,7 +47,10 @@
 				className="w-5"
 				name="remove"
 				color="blue"
-				on:click={() => dispatch('rm')}
+				on:click={(e) => {
+					dispatch('rm');
+					e.stopPropagation();
+				}}
 			>
 				<RmSvg />
 			</IconButton>
