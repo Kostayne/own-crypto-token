@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { createEventDispatcher, getContext } from 'svelte';
-	import type { Writable } from 'svelte/store';
+	import { createEventDispatcher, getContext, onMount } from 'svelte';
+	import { type Writable } from 'svelte/store';
 
 	// c
 	import Modal from '@c/Modal.svelte';
@@ -8,33 +8,47 @@
 	import CreateAccountButton from './buttons/CreateAccountButton.svelte';
 	import Button from '@c/buttons/Button.svelte';
 
-	// fixtures
-	import { accountPreviewsFixture } from '../../fixtures/accountPreviews.fixture';
-
 	// types
-	import type { AccountPreviewData } from '@t/accountPreviewData.type';
-	import type { EncryptedData } from '@t/encryptedData.type';
+	import type { WalletState } from '@t/walletState.type';
 
-	// state
-	const encrypted = getContext<Writable<EncryptedData>>('encrypted');
-	let previews: AccountPreviewData[] = accountPreviewsFixture;
+	// utils
+	import { generateAccountPreviews } from '@utils/generateAccountPreviews';
+
+	// global state
+	const walletStateStore = getContext<Writable<WalletState>>('walletState');
+	const unsubscribeFromWalletState = walletStateStore.subscribe(() => {});
 
 	const dispatch = createEventDispatcher();
+
+	// computed
+	$: previews = generateAccountPreviews($walletStateStore?.accounts || []);
+
+	// hooks
+	onMount(() => {
+		return () => {
+			unsubscribeFromWalletState();
+		};
+	});
 </script>
 
-<Modal formClassName="w-[300px]" title="Accounts">
+<Modal on:close formClassName="w-[300px]" title="Accounts">
 	<div class="flex flex-col gap-y-2 w-full">
 		{#each previews as p}
 			<AccountPreview className="w-full" data={p} manageable />
 		{/each}
 	</div>
 
+	<!-- no accounts text -->
+	{#if previews.length === 0}
+		<p class="text-center pb-5">There is no child accounts, <br /> click plus to generate one</p>
+	{/if}
+
 	<CreateAccountButton className="mt-3 mr-auto" />
 
 	<Button
 		className="mt-4 w-full"
 		on:click={() => {
-			dispatch('closed');
+			dispatch('close');
 		}}
 	>
 		OK

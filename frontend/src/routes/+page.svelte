@@ -19,6 +19,7 @@
 	import { loadEncryptedDataRaw } from '@utils/encryptedDataStore';
 	import AccountSelect from './_components/AccountSelect.svelte';
 	import { generateAccountPreviews } from '@utils/generateAccountPreviews';
+	import ManageAccountsModal from './_components/ManageAccountsModal.svelte';
 
 	// global state
 	const walletStateStore = getContext<Writable<WalletState>>('walletState');
@@ -56,6 +57,9 @@
 		] as AccountPreviewData[];
 	};
 
+	// let local state
+	let isShowingAccountManagement = false;
+
 	// hooks
 	onMount(() => {
 		// redirect to welcome page if data is not stored
@@ -90,10 +94,21 @@
 	<span class="mt-6 text-[23px] font-semibold text-primary">500 {tokenSymbol}</span>
 
 	<AccountSelect
-		selectedAddress={$walletStateStore.selectedWallet.address}
+		on:clickManage={() => {
+			isShowingAccountManagement = true;
+		}}
+		selectedAddress={$walletStateStore?.selectedWallet?.address}
 		previewsData={getAccountPreviews()}
 		className="mt-1"
 	/>
+
+	{#if isShowingAccountManagement}
+		<ManageAccountsModal
+			on:close={() => {
+				isShowingAccountManagement = false;
+			}}
+		/>
+	{/if}
 
 	<UserActionsList className="mt-6" />
 	<AdminActionsList className="mt-6" />

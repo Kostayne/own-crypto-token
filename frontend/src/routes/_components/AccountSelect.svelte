@@ -28,7 +28,7 @@
 	// event handlers
 	function onItemSelect(address: string) {
 		selectedAddress = address;
-		dispatch('onChange', selectedAddress);
+		dispatch('change', selectedAddress);
 	}
 </script>
 
@@ -80,7 +80,7 @@
 				<TextButton
 					type="alternative"
 					className={gs('font-medium text-[14px]')}
-					on:click={() => dispatch('clickedManage')}
+					on:click={() => dispatch('clickManage')}
 				>
 					Manage accounts
 				</TextButton>
