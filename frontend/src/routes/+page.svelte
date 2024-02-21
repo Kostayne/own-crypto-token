@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { getContext, onMount } from 'svelte';
-	import Select from 'svelte-select';
 
 	// types
 	import type { Writable } from 'svelte/store';
 	import type { EncryptedData } from '@t/encryptedData.type';
+	import type { WalletState } from '@t/walletState.type';
+	import type { AccountPreviewData } from '@t/accountPreviewData.type';
 
 	// cfg
 	import { tokenName, tokenSymbol } from '../cfg';
@@ -15,12 +16,12 @@
 	import AdminActionsList from './_components/AdminActionsList.svelte';
 
 	// utils
-	import { loadEncryptedDataRaw } from '@utils/seedPhraseStore';
-	import type { HDNodeWallet } from 'ethers';
+	import { loadEncryptedDataRaw } from '@utils/encryptedDataStore';
 	import AccountSelect from './_components/AccountSelect.svelte';
+	import { generateAccountPreviews } from '@utils/generateAccountPreviews';
 
 	// global state
-	const walletStore = getContext<Writable<HDNodeWallet>>('wallet');
+	const walletStateStore = getContext<Writable<WalletState>>('walletState');
 	const encryptedStore = getContext<Writable<EncryptedData>>('encrypted');
 
 	const unsubscribeFromEncryptedData = encryptedStore.subscribe((updatedData) => {
@@ -39,6 +40,22 @@
 		}
 	});
 
+	// helpers
+	const getAccountPreviews = (): AccountPreviewData[] => {
+		if (!$walletStateStore) {
+			return [];
+		}
+
+		return [
+			{
+				address: $walletStateStore.mainWallet.address,
+				name: 'Main account',
+			},
+
+			...generateAccountPreviews($walletStateStore.accounts),
+		] as AccountPreviewData[];
+	};
+
 	// hooks
 	onMount(() => {
 		// redirect to welcome page if data is not stored
@@ -48,9 +65,7 @@
 		}
 
 		// redirect to login page if data not decrypted
-		if (!$encryptedStore || !$walletStore) {
-			console.log(`encrypted`, $encryptedStore);
-			console.log(`wallet`, $walletStore);
+		if (!$encryptedStore || !$walletStateStore) {
 			goto('/login');
 			return;
 		}
@@ -74,12 +89,12 @@
 	<!-- TODO load user balance -->
 	<span class="mt-6 text-[23px] font-semibold text-primary">500 {tokenSymbol}</span>
 
-	<!-- TODO address selector -->
-	<AccountSelect className="mt-1" />
+	<AccountSelect
+		selectedAddress={$walletStateStore.selectedWallet.address}
+		previewsData={getAccountPreviews()}
+		className="mt-1"
+	/>
 
-	<!-- user actions -->
 	<UserActionsList className="mt-6" />
-
-	<!-- admin actions -->
 	<AdminActionsList className="mt-6" />
 </main>

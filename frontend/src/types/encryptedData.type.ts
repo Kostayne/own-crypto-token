@@ -1,8 +1,8 @@
 import type { ConnectionData } from "./connectionData.type";
-import type { HDAccountData } from "./hdAccountData.type";
+import type { HDAccountGenerationData } from "./hdAccountGenerationData.type";
 
 export interface EncryptedData {
     seedPhrase: string;
-    childAccounts: HDAccountData[];
+    accounts: HDAccountGenerationData[];
     connectionData: ConnectionData;
 }

@@ -28,7 +28,9 @@
 		noFill ? '' : styles.fill,
 
 		{
-			'hover:bg-blue hover:saturate-[0.5] fill-blue': color === 'blue',
+			'hover:bg-blue hover:saturate-[0.5] active:bg-blue active:saturate-50 fill-blue':
+				color === 'blue',
+
 			'hover:bg-primary fill-primary': color === 'green',
 
 			'stroke-blue hover:*:stroke-awhite': strokeOnly && color == 'blue',

@@ -4,7 +4,7 @@
 	export let title = '';
 	export let className = '';
 	export let formClassName = '';
-	export let type: 'success' | 'action' | 'warning' | 'error' = 'action';
+	export let type: 'primary' | 'warning' | 'error' = 'primary';
 </script>
 
 <!-- wrapper -->
@@ -26,7 +26,7 @@
 		<span
 			class={gs(
 				{
-					'text-primary': type === 'success',
+					'text-primary': type === 'primary',
 					'text-btn-warning': type === 'warning',
 					'text-btn-danger': type === 'error',
 				},
@@ -38,7 +38,7 @@
 		</span>
 
 		<!-- content -->
-		<div class="mt-3">
+		<div class="mt-3 w-full">
 			<slot />
 		</div>
 	</div>

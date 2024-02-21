@@ -4,7 +4,7 @@
 
 	// c
 	import Button from '@c/buttons/Button.svelte';
-	import TextButton from '@c/TextButton.svelte';
+	import TextButton from '@c/buttons/TextButton.svelte';
 	import WordsInput from './components/WordsInput.svelte';
 
 	// types

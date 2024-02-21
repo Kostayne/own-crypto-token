@@ -1,7 +1,7 @@
 <script lang="ts">
 	// c
 	import Button from '@c/buttons/Button.svelte';
-	import TextButton from '@c/TextButton.svelte';
+	import TextButton from '@c/buttons/TextButton.svelte';
 </script>
 
 <svelte:head>

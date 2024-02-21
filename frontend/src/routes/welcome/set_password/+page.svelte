@@ -14,7 +14,8 @@
 
 	// utils
 	import { validatePassword, validatePasswordConfirm } from '@utils/passwordValidator';
-	import { saveEncryptedData } from '@utils/seedPhraseStore';
+	import { saveEncryptedData } from '@utils/encryptedDataStore';
+	import type { WalletState } from '@t/walletState.type';
 
 	// state
 	let password = '';
@@ -22,8 +23,9 @@
 	let confirm = '';
 	let confirmErr = '';
 
-	const initData = getContext<Writable<InitData>>('initData');
-	const wallet = getContext<Writable<HDNodeWallet>>('wallet');
+	const initDataStore = getContext<Writable<InitData>>('initData');
+	const walletStateStore = getContext<Writable<WalletState>>('walletState');
+	const encryptedDataStore = getContext<Writable<EncryptedData>>('encrypted');
 
 	// event listeners
 	async function onSetPasswordClick() {
@@ -33,30 +35,38 @@
 		}
 
 		// if some how we not have seed phrase redirect user
-		if (!$initData.seedPhrase) {
+		if (!$initDataStore.seedPhrase) {
 			goto('/welcome');
 			return;
 		}
 
 		// saving password
-		$initData = { ...$initData, password };
+		$initDataStore = { ...$initDataStore, password };
 
+		// generating an hd wallet from seed phrase
+		// and setting global wallet state
 		try {
-			// generating an hd wallet from seed phrase
-			const seedPhrase = $initData.seedPhrase as string;
-			wallet.set(HDNodeWallet.fromPhrase(seedPhrase));
+			const seedPhrase = $initDataStore.seedPhrase as string;
+			const wallet = HDNodeWallet.fromPhrase(seedPhrase);
+
+			walletStateStore.set({
+				accounts: [],
+				mainWallet: wallet,
+				selectedWallet: wallet,
+			});
 
 			// setting encrypted data
-			const data: EncryptedData = {
-				childAccounts: [],
-				seedPhrase: $initData.seedPhrase as string,
+			const encryptedData: EncryptedData = {
+				accounts: [],
+				seedPhrase: $initDataStore.seedPhrase as string,
 
 				connectionData: {
 					type: 'API',
 				},
 			};
 
-			saveEncryptedData(data, password);
+			saveEncryptedData(encryptedData, password);
+			encryptedDataStore.set(encryptedData);
 
 			// redirect to home
 			goto('/');
@@ -70,7 +80,7 @@
 	// hooks
 	onMount(() => {
 		// seed phrase must be already set, otherwise redirect user
-		if (!$initData.seedPhrase) {
+		if (!$initDataStore.seedPhrase) {
 			goto('/welcome');
 		}
 

@@ -72,7 +72,7 @@
 				<!-- options -->
 				{#each notSelectedAccounts as acc}
 					<button on:click={() => onItemSelect(acc.address)}>
-						<AccountPreview className={gs('hover:bg-gray-200 transition')} data={acc} manageable />
+						<AccountPreview className={gs('hover:bg-gray-200 transition')} data={acc} />
 					</button>
 				{/each}
 
@@ -87,4 +87,6 @@
 			</div>
 		{/if}
 	</div>
+
+	<!-- TODO copy address btn -->
 </button>

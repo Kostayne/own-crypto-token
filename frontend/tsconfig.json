@@ -17,7 +17,8 @@
 			"@c/*": ["./src/components/*"],
 			"@icons/*": ["./src/components/icons/*"],
 			"@utils/*": ["./src/utils/*"],
-			"@t/*": ["./src/types/*"]
+			"@t/*": ["./src/types/*"],
+			"@fixtures/*": ["./src/fixtures/*"],
 		}
 	},
 }

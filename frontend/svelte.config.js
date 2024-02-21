@@ -18,6 +18,7 @@ const config = {
 			'@icons': './src/components/icons',
 			'@utils': './src/utils',
 			'@t': './src/types',
+			'@fixtures/*': './src/fixtures/*',
 		},
 	},
 

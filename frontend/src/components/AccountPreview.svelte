@@ -11,6 +11,7 @@
 
 	// types
 	import type { AccountPreviewData } from '@t/accountPreviewData.type';
+	import { clipAddress } from '@utils/clipAddress';
 
 	// props
 	export let className = '';
@@ -25,7 +26,7 @@
 <div class={gs(className, 'flex p-2 bg-[#F8F8F8] rounded-md')}>
 	<div class={gs('flex flex-col gap-1')}>
 		<span class="text-left text-blue text-[14px] font-medium">{data.name}</span>
-		<span class="text-left text-[14px]">{data.address}</span>
+		<span class="text-left text-[14px]">{clipAddress(data.address)}</span>
 	</div>
 
 	{#if manageable}
