@@ -1,5 +1,5 @@
-import type { EncryptedData } from "./encryptedData.type";
-import type { WalletState } from "./walletState.type";
+import type { EncryptedData } from "@t/encryptedData.type";
+import type { WalletState } from "@t/walletState.type";
 
 export interface GlobalStateData {
     encrypted: EncryptedData;

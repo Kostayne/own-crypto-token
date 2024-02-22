@@ -30,6 +30,8 @@
 		selectedAddress = address;
 		dispatch('change', selectedAddress);
 	}
+
+	// TODO add close on click outside feature!
 </script>
 
 <button

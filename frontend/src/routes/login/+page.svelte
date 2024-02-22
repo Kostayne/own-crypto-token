@@ -10,11 +10,13 @@
 
 	// types
 	import type { EncryptedData } from '@t/encryptedData.type';
-	import type { GlobalStateData } from '@t/globalStateData.type';
+	import type { GlobalStateData } from '@stores/globalStore/globalStateData.type';
+
+	// validators
+	import { validatePassword } from '@validators/passwordValidator';
 
 	// utils
 	import { loadEncryptedDataRaw, loadEncryptedData } from '@utils/encryptedDataStore';
-	import { validatePassword } from '@utils/passwordValidator';
 	import { generateHDAccountsFromData } from '@utils/generateHDAccountsFromGenData';
 
 	// ctx

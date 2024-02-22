@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import type { HDNodeWallet } from 'ethers';
+	import { HDNodeWallet } from 'ethers';
 
 	// c
 	import Input from '@c/Input.svelte';
@@ -8,97 +8,56 @@
 	import Button from '@c/buttons/Button.svelte';
 	import TextButton from '@c/buttons/TextButton.svelte';
 
-	// utils
-	import { saveEncryptedData } from '@utils/encryptedDataStore';
-
 	// ctx
 	import { getGlobalStore } from '@ctx/getGlobalStore';
 	import { clipAddress } from '@utils/clipAddress';
 
-	// local state
-	let indexStr = '';
-	let indexErr = validateIndex('');
-
-	let name = '';
-	let nameErr = validateName('');
-
-	let wallet: HDNodeWallet | undefined;
-
-	const dispatch = createEventDispatcher();
+	// validators
+	import { validateAccountIndex } from '@validators/accountIndexValidator';
+	import { validateAccountName } from '@validators/accountNameValidator';
+	import { GlobalStoreActions } from '@stores/globalStore/globalStoreActions';
 
 	// global state
 	const globalStore = getGlobalStore();
 
+	// local state
+	let indexStr = '';
+	let indexErr = validateAccountIndex('', []);
+
+	let name = '';
+	let nameErr = validateAccountName('', []);
+
+	let wallet: HDNodeWallet | undefined;
+
+	const dispatch = createEventDispatcher();
+	const storeActions = new GlobalStoreActions(globalStore);
+
 	// event handlers
-	function onSaveClick() {
-		if (!$globalStore) {
-			alert('You are not authorized!');
+	function onCreateClick() {
+		const index = parseInt(indexStr);
+
+		if (!wallet) {
+			alert('There is no account wallet to save!');
 			return;
 		}
 
-		if (!wallet) {
-			throw new Error('No wallet to save!');
-		}
-
-		const globalState = { ...$globalStore };
-		const index = parseInt(indexStr);
-
-		// adding new account into encrypted data
-		globalState.encrypted.accounts.push({
-			index,
-			name,
-		});
-
-		// adding new account into wallet state
-		globalState.walletState.accounts.push({
+		const err = storeActions.createAccount({
 			name,
 			index,
 			wallet,
 		});
 
-		// setting global state
-		globalStore.set(globalState);
+		if (err === 'FAILED_TO_SAVE') {
+			alert('Failed to save. Is localStorage allowed?');
+			return;
+		}
 
-		// saving changes in browser
-		try {
-			saveEncryptedData(globalState.encrypted, globalState.password);
-		} catch (e) {
-			console.error(e);
-			alert('Failed to save new account');
-			throw new Error('Failed to save new account!');
+		if (err === 'NOT_AUTHORIZED') {
+			alert('Unauthorized');
+			return;
 		}
 
 		dispatch('close');
-	}
-
-	function validateName(val: string): string {
-		if (val.length === 0) {
-			return 'Empty name';
-		}
-
-		if (val.length > 12) {
-			return 'Too long';
-		}
-
-		return '';
-	}
-
-	function validateIndex(val: string): string {
-		const parsed = parseInt(val);
-
-		if (isNaN(parsed)) {
-			return 'Only numbers allowed';
-		}
-
-		if (parsed <= 0) {
-			return 'Negative or zero value';
-		}
-
-		if ($globalStore.encrypted.accounts.some((a) => a.index === parsed)) {
-			return 'The index already taken';
-		}
-
-		return '';
 	}
 
 	function deriveWallet(index: number) {
@@ -113,10 +72,9 @@
 		error={indexErr}
 		on:change={(e) => {
 			indexStr = e.detail;
-			indexErr = validateIndex(indexStr);
+			indexErr = validateAccountIndex(indexStr, $globalStore.walletState.accounts);
 
-			// reset generated wallet
-			// if index is invalid
+			// reset generated wallet if index is invalid
 			if (indexErr) {
 				wallet = undefined;
 				return;
@@ -133,7 +91,7 @@
 		className="mt-2"
 		on:change={(e) => {
 			name = e.detail;
-			nameErr = validateName(name);
+			nameErr = validateAccountName(name, $globalStore.walletState.accounts);
 		}}
 	/>
 
@@ -141,7 +99,7 @@
 
 	<!-- buttons -->
 	<div class="flex items-center mt-4">
-		<Button disabled={Boolean(indexErr || nameErr)} on:click={onSaveClick}>SAVE</Button>
+		<Button disabled={Boolean(indexErr || nameErr)} on:click={onCreateClick}>CREATE</Button>
 
 		<TextButton
 			className="ml-auto"

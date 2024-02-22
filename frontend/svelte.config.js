@@ -20,6 +20,8 @@ const config = {
 			'@t': './src/types',
 			'@fixtures/*': './src/fixtures/*',
 			'@ctx/*': './src/ctx/*',
+			'@stores/*': './src/stores/*',
+			'@validators/*': './src/validators/*',
 		},
 	},
 

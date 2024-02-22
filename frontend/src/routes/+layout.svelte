@@ -6,7 +6,7 @@
 	import '../app.css';
 
 	// types
-	import type { GlobalStateData } from '@t/globalStateData.type';
+	import type { GlobalStateData } from '@stores/globalStore/globalStateData.type';
 
 	// stores
 	let globalStore = writable<GlobalStateData>(undefined);

@@ -8,7 +8,7 @@
 	import Button from '@c/buttons/Button.svelte';
 
 	// utils
-	import { validatePassword, validatePasswordConfirm } from '@utils/passwordValidator';
+	import { validatePassword, validatePasswordConfirm } from '../../../validators/passwordValidator';
 	import { saveEncryptedData } from '@utils/encryptedDataStore';
 
 	// ctx

@@ -4,7 +4,7 @@
 
 	// types
 	import type { AccountPreviewData } from '@t/accountPreviewData.type';
-	import type { GlobalStateData } from '@t/globalStateData.type';
+	import type { GlobalStateData } from '@stores/globalStore/globalStateData.type';
 
 	// cfg
 	import { tokenName, tokenSymbol } from '../cfg';
