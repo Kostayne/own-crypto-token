@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { getContext, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { Wallet } from 'ethers';
 
 	// c
@@ -10,8 +10,7 @@
 	import MnemonicsWarningModal from './components/MnemonicsWarningModal.svelte';
 
 	// types
-	import type { InitData } from '@t/initData.type';
-	import type { Writable } from 'svelte/store';
+	import { getInitStore } from '@ctx/getInitStore';
 
 	// state
 	let generatedWords: string[] = [];
@@ -19,7 +18,7 @@
 	// before generating new address, we need to show a modal to user,
 	let isShowingMnemonicsWarning = false;
 
-	const initData = getContext<Writable<InitData>>('initData');
+	const initDataStore = getInitStore();
 
 	onMount(() => {
 		// generating an hd wallet
@@ -48,7 +47,7 @@
 		}
 
 		// saving seed phrase as str in context
-		initData.set({ seedPhrase: generatedWords.join(' ') });
+		initDataStore.set({ seedPhrase: generatedWords.join(' ') });
 
 		// redirecting to set password step
 		goto('/welcome/set_password');

@@ -8,6 +8,6 @@
 	export let className = '';
 </script>
 
-<IconButton className={gs(className)} color="blue">
+<IconButton on:click className={gs(className)} color="blue">
 	<AddSvg />
 </IconButton>

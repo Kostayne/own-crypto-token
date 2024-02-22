@@ -13,8 +13,8 @@
 	export let type: 'text' | 'password' = 'text';
 	export let error: string | boolean = false;
 	export let name = label;
-	export let autocomplete = '';
 
+	export let autocomplete: string | undefined = undefined;
 	export let validator: Validator | undefined = undefined;
 
 	const dispatchEvent = createEventDispatcher();

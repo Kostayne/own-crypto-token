@@ -6,16 +6,13 @@
 	import '../app.css';
 
 	// types
-	import type { EncryptedData } from '@t/encryptedData.type';
-	import type { WalletState } from '@t/walletState.type';
+	import type { GlobalStateData } from '@t/globalStateData.type';
 
 	// stores
-	let encryptedData = writable<EncryptedData>(undefined);
-	let walletState = writable<WalletState>(undefined);
+	let globalStore = writable<GlobalStateData>(undefined);
 
 	// passing context to children
-	setContext('encrypted', encryptedData);
-	setContext('walletState', walletState);
+	setContext('globalState', globalStore);
 </script>
 
 <slot />

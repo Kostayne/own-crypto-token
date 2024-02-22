@@ -1,12 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { getContext, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 
 	// types
-	import type { Writable } from 'svelte/store';
-	import type { EncryptedData } from '@t/encryptedData.type';
-	import type { WalletState } from '@t/walletState.type';
 	import type { AccountPreviewData } from '@t/accountPreviewData.type';
+	import type { GlobalStateData } from '@t/globalStateData.type';
 
 	// cfg
 	import { tokenName, tokenSymbol } from '../cfg';
@@ -14,51 +12,47 @@
 	// components
 	import UserActionsList from './_components/UserActionsList.svelte';
 	import AdminActionsList from './_components/AdminActionsList.svelte';
+	import ManageAccountsModal from './_components/modals/ManageAccountsModal.svelte';
+	import AccountSelect from './_components/AccountSelect.svelte';
+	import CreateChildAccountModal from './_components/modals/CreateChildAccountModal.svelte';
 
 	// utils
 	import { loadEncryptedDataRaw } from '@utils/encryptedDataStore';
-	import AccountSelect from './_components/AccountSelect.svelte';
 	import { generateAccountPreviews } from '@utils/generateAccountPreviews';
-	import ManageAccountsModal from './_components/ManageAccountsModal.svelte';
+
+	// ctx
+	import { getGlobalStore } from '@ctx/getGlobalStore';
 
 	// global state
-	const walletStateStore = getContext<Writable<WalletState>>('walletState');
-	const encryptedStore = getContext<Writable<EncryptedData>>('encrypted');
+	const globalStore = getGlobalStore();
 
-	const unsubscribeFromEncryptedData = encryptedStore.subscribe((updatedData) => {
+	const unsubscribeFromGlobalState = globalStore.subscribe((newGlobalState) => {
 		// handling sign out
-		if (!updatedData) {
-			goto('/login');
-			return;
-		}
-	});
-
-	const unsubscribeFromWallet = encryptedStore.subscribe((updWallet) => {
-		// handling sign out
-		if (!updWallet) {
+		if (!newGlobalState) {
 			goto('/login');
 			return;
 		}
 	});
 
 	// helpers
-	const getAccountPreviews = (): AccountPreviewData[] => {
-		if (!$walletStateStore) {
+	const getAccountPreviews = (globalState: GlobalStateData): AccountPreviewData[] => {
+		if (!globalState) {
 			return [];
 		}
 
 		return [
 			{
-				address: $walletStateStore.mainWallet.address,
+				address: globalState.walletState.mainWallet.address,
 				name: 'Main account',
 			},
 
-			...generateAccountPreviews($walletStateStore.accounts),
+			...generateAccountPreviews(globalState.walletState.accounts),
 		] as AccountPreviewData[];
 	};
 
 	// let local state
 	let isShowingAccountManagement = false;
+	let isShowingCreateAccount = false;
 
 	// hooks
 	onMount(() => {
@@ -69,17 +63,19 @@
 		}
 
 		// redirect to login page if data not decrypted
-		if (!$encryptedStore || !$walletStateStore) {
+		if (!$globalStore) {
 			goto('/login');
 			return;
 		}
 
 		// clear
 		return () => {
-			unsubscribeFromWallet();
-			unsubscribeFromEncryptedData();
+			unsubscribeFromGlobalState();
 		};
 	});
+
+	// computed
+	$: accountPreviews = getAccountPreviews($globalStore);
 </script>
 
 <svelte:head>
@@ -97,8 +93,8 @@
 		on:clickManage={() => {
 			isShowingAccountManagement = true;
 		}}
-		selectedAddress={$walletStateStore?.selectedWallet?.address}
-		previewsData={getAccountPreviews()}
+		selectedAddress={$globalStore?.walletState?.selectedWallet?.address}
+		previewsData={accountPreviews}
 		className="mt-1"
 	/>
 
@@ -106,6 +102,18 @@
 		<ManageAccountsModal
 			on:close={() => {
 				isShowingAccountManagement = false;
+			}}
+			on:createAccount={() => {
+				isShowingCreateAccount = true;
+			}}
+		/>
+	{/if}
+
+	{#if isShowingCreateAccount}
+		<CreateChildAccountModal
+			on:close={() => {
+				isShowingAccountManagement = true;
+				isShowingCreateAccount = false;
 			}}
 		/>
 	{/if}

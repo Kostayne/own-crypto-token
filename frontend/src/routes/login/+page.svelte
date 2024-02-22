@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { getContext, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { HDNodeWallet } from 'ethers';
 
 	// c
@@ -9,22 +9,23 @@
 	import WelcomeText from '@c/WelcomeText.svelte';
 
 	// types
-	import type { Writable } from 'svelte/store';
 	import type { EncryptedData } from '@t/encryptedData.type';
-	import type { WalletState } from '@t/walletState.type';
+	import type { GlobalStateData } from '@t/globalStateData.type';
 
 	// utils
 	import { loadEncryptedDataRaw, loadEncryptedData } from '@utils/encryptedDataStore';
 	import { validatePassword } from '@utils/passwordValidator';
 	import { generateHDAccountsFromData } from '@utils/generateHDAccountsFromGenData';
 
+	// ctx
+	import { getGlobalStore } from '@ctx/getGlobalStore';
+
 	// state
 	let password = '';
 	let passwordErr = '';
 
 	// global state
-	const walletStateStore = getContext<Writable<WalletState>>('walletState');
-	const encryptedStore = getContext<Writable<EncryptedData>>('encrypted');
+	const globalStore = getGlobalStore();
 
 	// hooks
 	onMount(() => {
@@ -50,12 +51,15 @@
 			return;
 		}
 
+		const globalState = {} as GlobalStateData;
+
 		// loading encrypted data
 		let encryptedData: EncryptedData;
 
 		try {
 			encryptedData = loadEncryptedData(password);
-			encryptedStore.set(encryptedData);
+			globalState.encrypted = encryptedData;
+			globalState.password = password;
 		} catch (e) {
 			passwordErr = 'Invalid password';
 			return;
@@ -67,16 +71,18 @@
 			const mainWallet = HDNodeWallet.fromPhrase(seedPhrase);
 			const accounts = generateHDAccountsFromData(mainWallet, encryptedData.accounts);
 
-			walletStateStore.set({
+			globalState.walletState = {
 				accounts,
 				mainWallet,
 				selectedWallet: mainWallet,
-			});
+			};
 		} catch (e) {
 			console.error(e);
 			alert('Loaded seed phrase is invalid!');
 			return;
 		}
+
+		globalStore.set(globalState);
 
 		// redir to home
 		goto('/');

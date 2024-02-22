@@ -1,21 +1,19 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { getContext, onMount } from 'svelte';
+	import { onMount } from 'svelte';
+	import { HDNodeWallet } from 'ethers';
 
 	// c
 	import Input from '@c/Input.svelte';
 	import Button from '@c/buttons/Button.svelte';
 
-	// types
-	import { HDNodeWallet } from 'ethers';
-	import type { Writable } from 'svelte/store';
-	import type { InitData } from '@t/initData.type';
-	import type { EncryptedData } from '@t/encryptedData.type';
-
 	// utils
 	import { validatePassword, validatePasswordConfirm } from '@utils/passwordValidator';
 	import { saveEncryptedData } from '@utils/encryptedDataStore';
-	import type { WalletState } from '@t/walletState.type';
+
+	// ctx
+	import { getInitStore } from '@ctx/getInitStore';
+	import { getGlobalStore } from '@ctx/getGlobalStore';
 
 	// state
 	let password = '';
@@ -23,9 +21,8 @@
 	let confirm = '';
 	let confirmErr = '';
 
-	const initDataStore = getContext<Writable<InitData>>('initData');
-	const walletStateStore = getContext<Writable<WalletState>>('walletState');
-	const encryptedDataStore = getContext<Writable<EncryptedData>>('encrypted');
+	const initDataStore = getInitStore();
+	const globalStore = getGlobalStore();
 
 	// event listeners
 	async function onSetPasswordClick() {
@@ -49,14 +46,17 @@
 			const seedPhrase = $initDataStore.seedPhrase as string;
 			const wallet = HDNodeWallet.fromPhrase(seedPhrase);
 
-			walletStateStore.set({
+			const globalState = { ...$globalStore };
+
+			// setting wallet sate
+			globalState.walletState = {
 				accounts: [],
 				mainWallet: wallet,
 				selectedWallet: wallet,
-			});
+			};
 
 			// setting encrypted data
-			const encryptedData: EncryptedData = {
+			globalState.encrypted = {
 				accounts: [],
 				seedPhrase: $initDataStore.seedPhrase as string,
 
@@ -65,8 +65,11 @@
 				},
 			};
 
-			saveEncryptedData(encryptedData, password);
-			encryptedDataStore.set(encryptedData);
+			// setting new global state
+			globalStore.set(globalState);
+
+			// saving encrypted data to browser
+			saveEncryptedData(globalState.encrypted, password);
 
 			// redirect to home
 			goto('/');

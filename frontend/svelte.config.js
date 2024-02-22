@@ -19,6 +19,7 @@ const config = {
 			'@utils': './src/utils',
 			'@t': './src/types',
 			'@fixtures/*': './src/fixtures/*',
+			'@ctx/*': './src/ctx/*',
 		},
 	},
 

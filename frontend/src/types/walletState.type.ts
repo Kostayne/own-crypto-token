@@ -5,8 +5,7 @@ import type { HDAccount } from "./hdAccount.type";
  * @description Describes main hd wallet + its children
  */
 export interface WalletState {
-    mainWallet: HDNodeWallet;
     accounts: HDAccount[];
-
+    mainWallet: HDNodeWallet;
     selectedWallet: HDNodeWallet;
 }

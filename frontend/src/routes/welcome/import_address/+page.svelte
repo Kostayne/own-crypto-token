@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { getContext } from 'svelte';
 	import { goto } from '$app/navigation';
 
 	// c
@@ -8,15 +7,16 @@
 	import WordsInput from './components/WordsInput.svelte';
 
 	// types
-	import type { Writable } from 'svelte/store';
-	import type { InitData } from '@t/initData.type';
 	import { Mnemonic } from 'ethers';
+
+	// ctx
+	import { getInitStore } from '@ctx/getInitStore';
 
 	// state
 	let importedWordsAreValid = false;
 	let importedWords: string[] = new Array(12).fill('');
 
-	const initData = getContext<Writable<InitData>>('initData');
+	const initDataStore = getInitStore();
 
 	// component refs
 	let wordsInputRef: WordsInput;
@@ -37,7 +37,7 @@
 		}
 
 		// saving seed phrase
-		initData.set({ seedPhrase });
+		initDataStore.set({ seedPhrase });
 
 		// redirecting to set pass phase
 		goto('/welcome/set_password');

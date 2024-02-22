@@ -1,32 +1,31 @@
 <script lang="ts">
-	import { createEventDispatcher, getContext, onMount } from 'svelte';
-	import { type Writable } from 'svelte/store';
+	import { createEventDispatcher, onMount } from 'svelte';
 
 	// c
 	import Modal from '@c/Modal.svelte';
 	import AccountPreview from '@c/AccountPreview.svelte';
-	import CreateAccountButton from './buttons/CreateAccountButton.svelte';
 	import Button from '@c/buttons/Button.svelte';
-
-	// types
-	import type { WalletState } from '@t/walletState.type';
+	import CreateAccountButton from '../buttons/CreateAccountButton.svelte';
 
 	// utils
 	import { generateAccountPreviews } from '@utils/generateAccountPreviews';
 
+	// ctx
+	import { getGlobalStore } from '@ctx/getGlobalStore';
+
 	// global state
-	const walletStateStore = getContext<Writable<WalletState>>('walletState');
-	const unsubscribeFromWalletState = walletStateStore.subscribe(() => {});
+	const globalStore = getGlobalStore();
+	const unsubscribeFromGlobalStore = globalStore.subscribe(() => {});
 
 	const dispatch = createEventDispatcher();
 
 	// computed
-	$: previews = generateAccountPreviews($walletStateStore?.accounts || []);
+	$: previews = generateAccountPreviews($globalStore.walletState?.accounts || []);
 
 	// hooks
 	onMount(() => {
 		return () => {
-			unsubscribeFromWalletState();
+			unsubscribeFromGlobalStore();
 		};
 	});
 </script>
@@ -43,7 +42,12 @@
 		<p class="text-center pb-5">There is no child accounts, <br /> click plus to generate one</p>
 	{/if}
 
-	<CreateAccountButton className="mt-3 mr-auto" />
+	<CreateAccountButton
+		className="mt-3 mr-auto"
+		on:click={() => {
+			dispatch('createAccount');
+		}}
+	/>
 
 	<Button
 		className="mt-4 w-full"
