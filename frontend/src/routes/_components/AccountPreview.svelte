@@ -7,7 +7,7 @@
 	import EditSvg from '@icons/edit.svg?component';
 
 	// c
-	import IconButton from './buttons/IconButton.svelte';
+	import IconButton from '@c/buttons/IconButton.svelte';
 
 	// types
 	import type { AccountPreviewData } from '@t/accountPreviewData.type';

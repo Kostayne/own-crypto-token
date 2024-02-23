@@ -6,7 +6,7 @@
 	import type { AccountPreviewData } from '@t/accountPreviewData.type';
 
 	// c
-	import AccountPreview from '@c/AccountPreview.svelte';
+	import AccountPreview from './AccountPreview.svelte';
 
 	// svgs
 	import ChevronSvg from '@icons/chevron.svg?component';

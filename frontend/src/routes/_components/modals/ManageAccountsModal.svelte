@@ -3,9 +3,9 @@
 
 	// c
 	import Modal from '@c/Modal.svelte';
-	import AccountPreview from '@c/AccountPreview.svelte';
 	import Button from '@c/buttons/Button.svelte';
 	import CreateAccountButton from '../buttons/CreateAccountButton.svelte';
+	import AccountPreview from '../AccountPreview.svelte';
 
 	// utils
 	import { generateAccountPreviews } from '@utils/generateAccountPreviews';
