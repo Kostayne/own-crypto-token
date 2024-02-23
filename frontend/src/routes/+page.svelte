@@ -12,9 +12,10 @@
 	// components
 	import UserActionsList from './_components/UserActionsList.svelte';
 	import AdminActionsList from './_components/AdminActionsList.svelte';
-	import ManageAccountsModal from './_components/modals/ManageAccountsModal.svelte';
 	import AccountSelect from './_components/AccountSelect.svelte';
 	import CreateChildAccountModal from './_components/modals/CreateChildAccountModal.svelte';
+	import ManageAccountsModal from './_components/modals/ManageAccountsModal.svelte';
+	import EditAccountsModal from './_components/modals/EditChildAccountModal.svelte';
 
 	// utils
 	import { loadEncryptedDataRaw } from '@utils/encryptedDataStore';
@@ -53,6 +54,9 @@
 	// let local state
 	let isShowingAccountManagement = false;
 	let isShowingCreateAccount = false;
+	let isShowingEditAccount = false;
+
+	let editingAccAddress = '';
 
 	// hooks
 	onMount(() => {
@@ -106,14 +110,28 @@
 			on:createAccount={() => {
 				isShowingCreateAccount = true;
 			}}
+			on:editAccount={(e) => {
+				editingAccAddress = e.detail;
+				isShowingEditAccount = true;
+			}}
 		/>
 	{/if}
 
 	{#if isShowingCreateAccount}
 		<CreateChildAccountModal
 			on:close={() => {
-				isShowingAccountManagement = true;
 				isShowingCreateAccount = false;
+				isShowingAccountManagement = true;
+			}}
+		/>
+	{/if}
+
+	{#if isShowingEditAccount}
+		<EditAccountsModal
+			address={editingAccAddress}
+			on:close={() => {
+				isShowingEditAccount = false;
+				isShowingAccountManagement = true;
 			}}
 		/>
 	{/if}

@@ -45,6 +45,32 @@ export class GlobalStoreActions {
 		}
     }
 
+	editAccount(address: string, newName: string) {
+		// forking global state
+		const globalState = { ...get(this.store) };
+
+		// getting acc to edit
+		const stateAcc = globalState.walletState.accounts.find(a => a.wallet.address === address);
+
+		if (!stateAcc) {
+			throw new Error('Could not find account to edit in state!');
+		}
+
+		const encryptedAcc = globalState.encrypted.accounts.find(a => stateAcc.index === a.index);
+		
+		if (!encryptedAcc) {
+			throw new Error('Could not find account to edit in encrypted data!');
+		}
+
+		// changing name
+		stateAcc.name = newName;
+		encryptedAcc.name = newName;
+
+		// saving changes
+		saveEncryptedData(globalState.encrypted, globalState.password);
+		this.store.set(globalState);
+	}
+
 	deleteAccount(address: string) {
 		// forking global state
 		const globalState = { ...get(this.store) };

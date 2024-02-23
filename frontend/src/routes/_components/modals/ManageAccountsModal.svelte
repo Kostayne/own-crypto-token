@@ -40,6 +40,9 @@
 				manageable
 				className="w-full"
 				on:rm={() => globalActions.deleteAccount(p.address)}
+				on:edit={() => {
+					dispatch('editAccount', p.address);
+				}}
 			/>
 		{/each}
 	</div>
