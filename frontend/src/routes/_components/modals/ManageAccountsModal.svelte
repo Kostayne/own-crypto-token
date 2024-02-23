@@ -12,9 +12,11 @@
 
 	// ctx
 	import { getGlobalStore } from '@ctx/getGlobalStore';
+	import { GlobalStoreActions } from '@stores/globalStore/globalStoreActions';
 
 	// global state
 	const globalStore = getGlobalStore();
+	const globalActions = new GlobalStoreActions(globalStore);
 	const unsubscribeFromGlobalStore = globalStore.subscribe(() => {});
 
 	const dispatch = createEventDispatcher();
@@ -33,7 +35,12 @@
 <Modal on:close formClassName="w-[300px]" title="Accounts">
 	<div class="flex flex-col gap-y-2 w-full">
 		{#each previews as p}
-			<AccountPreview className="w-full" data={p} manageable />
+			<AccountPreview
+				data={p}
+				manageable
+				className="w-full"
+				on:rm={() => globalActions.deleteAccount(p.address)}
+			/>
 		{/each}
 	</div>
 

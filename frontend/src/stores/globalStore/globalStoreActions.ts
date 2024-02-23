@@ -44,4 +44,39 @@ export class GlobalStoreActions {
             return 'FAILED_TO_SAVE';
 		}
     }
+
+	deleteAccount(address: string) {
+		// forking global state
+		const globalState = { ...get(this.store) };
+
+		// getting acc to delete
+		const accToDel = globalState.walletState.accounts.find(a => a.wallet.address === address);
+
+		// nothing to delete
+		if (!accToDel) {
+			return;
+		}
+
+		// checking if user tries to delete main wallet
+		if (accToDel.index === 0) {
+			throw new Error('Can not delete account with index 0!');
+		}
+
+		// selecting main acc if current selected account deleted
+		if (globalState.walletState.selectedWallet.address === address) {
+			globalState.walletState.selectedWallet = globalState.walletState.mainWallet;
+		}
+
+		// deleting acc from wallet state
+		globalState.walletState.accounts = globalState.walletState.accounts.filter(a => a.wallet.address !== address);
+
+		// deleting acc from encrypted data
+		globalState.encrypted.accounts = globalState.encrypted.accounts.filter(a => a.index !== accToDel.index);
+
+		// saving data to the browser
+		saveEncryptedData(globalState.encrypted, globalState.password);
+
+		// saving new global state
+		this.store.set(globalState);
+	}
 }
