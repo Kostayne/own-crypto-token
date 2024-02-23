@@ -59,13 +59,13 @@
 	bind:this={containerRef}
 	role="listbox"
 	tabindex="0"
-	class={gs(className, 'flex flex-col bg-whiteContrast cursor-pointer')}
+	class={gs(className, 'flex flex-col cursor-pointer')}
 >
 	<!-- horizontal -->
 	<div
 		class={gs(
 			'flex items-center w-full p-2',
-			'group hover:bg-gray-200 transition gap-x-2 rounded-md',
+			'group bg-whiteContrast hover:bg-gray-200 transition gap-x-2 rounded-md',
 		)}
 	>
 		{#if !selectedAccount}
@@ -87,9 +87,9 @@
 		{#if isOpened}
 			<div
 				class={gs(
-					'absolute left-0 right-0 top-3',
-					'flex flex-col gap-2',
-					'bg-white pb-2 rounded-b-sm',
+					'absolute left-[-40px] right-[-40px] top-3',
+					'flex flex-col gap-3',
+					'p-4 bg-white rounded-b-sm shadow-md',
 				)}
 			>
 				<!-- options -->
@@ -102,7 +102,7 @@
 				<!-- manage accounts btn -->
 				<TextButton
 					type="alternative"
-					className={gs('font-medium text-[14px]')}
+					className={gs('font-medium text-[14px] py-2 bg-whiteContrast')}
 					on:click={() => dispatch('clickManage')}
 				>
 					Manage accounts
