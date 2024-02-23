@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { gs } from 'get-module-style';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 
 	// types
 	import type { AccountPreviewData } from '@t/accountPreviewData.type';
@@ -20,6 +20,7 @@
 	// state
 	const dispatch = createEventDispatcher();
 
+	let containerRef: HTMLButtonElement;
 	let isOpened = false;
 
 	$: selectedAccount = previewsData.find((a) => a.address === selectedAddress) || previewsData[0];
@@ -31,11 +32,31 @@
 		dispatch('change', selectedAddress);
 	}
 
-	// TODO add close on click outside feature!
+	onMount(() => {
+		function onClickOnDocument(e: MouseEvent) {
+			if (!e.target) {
+				isOpened = false;
+				return;
+			}
+
+			const tg = e.target as HTMLElement;
+
+			if (tg.contains(containerRef)) {
+				isOpened = false;
+			}
+		}
+
+		document.addEventListener('click', onClickOnDocument);
+
+		return () => {
+			document.removeEventListener('click', onClickOnDocument);
+		};
+	});
 </script>
 
 <button
 	on:click={() => (isOpened = !isOpened)}
+	bind:this={containerRef}
 	role="listbox"
 	tabindex="0"
 	class={gs(className, 'flex flex-col bg-whiteContrast cursor-pointer')}
