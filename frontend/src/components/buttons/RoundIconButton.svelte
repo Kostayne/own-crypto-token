@@ -3,10 +3,11 @@
 
 	export let name = '';
 	export let className = '';
+	export let btnClassName = '';
 	export let color: 'primary' | 'blue' = 'primary';
 </script>
 
-<label class="flex flex-col items-center gap-1">
+<label class={gs('flex flex-col items-center w-fit', className)}>
 	<button
 		on:click
 		id={`icon-btn-${name}`}
@@ -20,7 +21,7 @@
 				'bg-blue hover:saturate-150 active:saturate-200': color === 'blue',
 			},
 
-			className,
+			btnClassName,
 		)}
 	>
 		<slot />
