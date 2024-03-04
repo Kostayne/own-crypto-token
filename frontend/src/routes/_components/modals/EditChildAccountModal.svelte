@@ -12,7 +12,7 @@
 
 	// validators
 	import { validateAccountName } from '@validators/accountNameValidator';
-	import { GlobalStoreActions } from '@stores/globalStore/globalStoreActions';
+	import { AccountActions } from '@stores/globalStore/accountActions';
 
 	// props
 	export let address: string;
@@ -25,7 +25,7 @@
 	let nameErr = validateAccountName('', []);
 
 	const dispatch = createEventDispatcher();
-	const storeActions = new GlobalStoreActions(globalStore);
+	const storeActions = new AccountActions(globalStore);
 
 	// event handlers
 	function onEditClick() {

@@ -1,19 +1,18 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { HDNodeWallet } from 'ethers';
 
 	// c
 	import Input from '@c/Input.svelte';
 	import Button from '@c/buttons/Button.svelte';
 
 	// utils
-	import { validatePassword, validatePasswordConfirm } from '../../../validators/passwordValidator';
-	import { saveEncryptedData } from '@utils/encryptedDataStore';
+	import { validatePassword, validatePasswordConfirm } from '@validators/passwordValidator';
 
 	// ctx
 	import { getInitStore } from '@ctx/getInitStore';
 	import { getGlobalStore } from '@ctx/getGlobalStore';
+	import { AuthActions } from '@stores/globalStore/authActions';
 
 	// state
 	let password = '';
@@ -24,6 +23,8 @@
 	const initDataStore = getInitStore();
 	const globalStore = getGlobalStore();
 
+	const authActions = new AuthActions(globalStore);
+
 	// event listeners
 	async function onSetPasswordClick() {
 		// validation check
@@ -31,52 +32,22 @@
 			return;
 		}
 
-		// if some how we not have seed phrase redirect user
-		if (!$initDataStore.seedPhrase) {
-			goto('/welcome');
+		const res = authActions.register(initDataStore, password);
+
+		// all ok, quit
+		if (!res.isError) {
 			return;
 		}
 
-		// saving password
-		$initDataStore = { ...$initDataStore, password };
+		// handling err
+		const err = res.unwrapErr();
 
-		// generating an hd wallet from seed phrase
-		// and setting global wallet state
-		try {
-			const seedPhrase = $initDataStore.seedPhrase as string;
-			const wallet = HDNodeWallet.fromPhrase(seedPhrase);
+		if (err === 'INVALID_SEED') {
+			alert('Your seed is invalid!');
+		}
 
-			const globalState = { ...$globalStore };
-
-			// setting wallet sate
-			globalState.walletState = {
-				accounts: [],
-				mainWallet: wallet,
-				selectedWallet: wallet,
-			};
-
-			// setting encrypted data
-			globalState.encrypted = {
-				accounts: [],
-				seedPhrase: $initDataStore.seedPhrase as string,
-
-				connectionData: {
-					type: 'API',
-				},
-			};
-
-			// setting new global state
-			globalStore.set(globalState);
-
-			// saving encrypted data to browser
-			saveEncryptedData(globalState.encrypted, password);
-
-			// redirect to home
-			goto('/');
-		} catch (e) {
-			console.error(e);
-			alert('Failed to encrypt your seed with a password, details in console.');
-			return;
+		if (err === 'FAILED_TO_SAVE') {
+			alert('Failed to save!');
 		}
 	}
 
@@ -93,7 +64,7 @@
 </script>
 
 <svelte:head>
-	<title>Set Kreepto pass</title>
+	<title>Set Kreepto password</title>
 </svelte:head>
 
 <main class="mx-auto max-w-[280px] flex flex-col">

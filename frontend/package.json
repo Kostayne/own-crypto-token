@@ -37,6 +37,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"base-ts-result": "^2.2.0",
 		"crypto-js": "^4.2.0",
 		"ethers": "^6.11.1",
 		"get-module-style": "^4.0.3",

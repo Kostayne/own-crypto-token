@@ -12,11 +12,11 @@
 
 	// ctx
 	import { getGlobalStore } from '@ctx/getGlobalStore';
-	import { GlobalStoreActions } from '@stores/globalStore/globalStoreActions';
+	import { AccountActions } from '@stores/globalStore/accountActions';
 
 	// global state
 	const globalStore = getGlobalStore();
-	const globalActions = new GlobalStoreActions(globalStore);
+	const globalActions = new AccountActions(globalStore);
 	const unsubscribeFromGlobalStore = globalStore.subscribe(() => {});
 
 	const dispatch = createEventDispatcher();

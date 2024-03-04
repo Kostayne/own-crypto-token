@@ -13,7 +13,7 @@ export function loadEncryptedDataRaw() {
     return localStorage.getItem(key);
 }
 
-export function loadEncryptedData(password: string) {
+export function loadEncryptedData(password: string): EncryptedData | undefined {
     const encrypted = localStorage.getItem(key);
 
     if (!encrypted) {

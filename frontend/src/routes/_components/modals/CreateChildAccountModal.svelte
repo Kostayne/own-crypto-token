@@ -15,7 +15,7 @@
 	// validators
 	import { validateAccountIndex } from '@validators/accountIndexValidator';
 	import { validateAccountName } from '@validators/accountNameValidator';
-	import { GlobalStoreActions } from '@stores/globalStore/globalStoreActions';
+	import { AccountActions } from '@stores/globalStore/accountActions';
 
 	// global state
 	const globalStore = getGlobalStore();
@@ -30,7 +30,7 @@
 	let wallet: HDNodeWallet | undefined;
 
 	const dispatch = createEventDispatcher();
-	const storeActions = new GlobalStoreActions(globalStore);
+	const storeActions = new AccountActions(globalStore);
 
 	// event handlers
 	function onCreateClick() {

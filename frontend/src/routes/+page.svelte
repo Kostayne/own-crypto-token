@@ -24,16 +24,16 @@
 	// ctx
 	import { getGlobalStore } from '@ctx/getGlobalStore';
 
+	// shared hooks
+	import { useAuth } from '../hooks/auth';
+
 	// global state
 	const globalStore = getGlobalStore();
 
-	const unsubscribeFromGlobalState = globalStore.subscribe((newGlobalState) => {
-		// handling sign out
-		if (!newGlobalState) {
-			goto('/login');
-			return;
-		}
-	});
+	globalStore.subscribe((newGlobalState) => {});
+
+	// hooks
+	useAuth('loggedIn');
 
 	// helpers
 	const getAccountPreviews = (globalState: GlobalStateData): AccountPreviewData[] => {
@@ -57,26 +57,6 @@
 	let isShowingEditAccount = false;
 
 	let editingAccAddress = '';
-
-	// hooks
-	onMount(() => {
-		// redirect to welcome page if data is not stored
-		if (!loadEncryptedDataRaw()) {
-			goto('/welcome');
-			return;
-		}
-
-		// redirect to login page if data not decrypted
-		if (!$globalStore) {
-			goto('/login');
-			return;
-		}
-
-		// clear
-		return () => {
-			unsubscribeFromGlobalState();
-		};
-	});
 
 	// computed
 	$: accountPreviews = getAccountPreviews($globalStore);

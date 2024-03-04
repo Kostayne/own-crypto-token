@@ -21,6 +21,7 @@
 
 	// ctx
 	import { getGlobalStore } from '@ctx/getGlobalStore';
+	import { AuthActions } from '@stores/globalStore/authActions';
 
 	// state
 	let password = '';
@@ -28,6 +29,7 @@
 
 	// global state
 	const globalStore = getGlobalStore();
+	const authActions = new AuthActions(globalStore);
 
 	// hooks
 	onMount(() => {
@@ -47,47 +49,12 @@
 			return;
 		}
 
-		// redir to welcome if no secret phrase stored
-		if (!loadEncryptedDataRaw) {
-			goto('/welcome');
-			return;
+		const res = authActions.login(password);
+		{
+			if (res.isError && res.unwrapErr() === 'INVALID_PASSWORD') {
+				passwordErr = 'Invalid password';
+			}
 		}
-
-		const globalState = {} as GlobalStateData;
-
-		// loading encrypted data
-		let encryptedData: EncryptedData;
-
-		try {
-			encryptedData = loadEncryptedData(password);
-			globalState.encrypted = encryptedData;
-			globalState.password = password;
-		} catch (e) {
-			passwordErr = 'Invalid password';
-			return;
-		}
-
-		// setting wallet state
-		try {
-			const seedPhrase = encryptedData.seedPhrase as string;
-			const mainWallet = HDNodeWallet.fromPhrase(seedPhrase);
-			const accounts = generateHDAccountsFromData(mainWallet, encryptedData.accounts);
-
-			globalState.walletState = {
-				accounts,
-				mainWallet,
-				selectedWallet: mainWallet,
-			};
-		} catch (e) {
-			console.error(e);
-			alert('Loaded seed phrase is invalid!');
-			return;
-		}
-
-		globalStore.set(globalState);
-
-		// redir to home
-		goto('/');
 	}
 </script>
 
