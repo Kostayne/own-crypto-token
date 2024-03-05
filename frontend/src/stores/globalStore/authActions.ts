@@ -14,9 +14,12 @@ import { generateHDAccountsFromData } from "@utils/generateHDAccountsFromGenData
 import type { GlobalStateData } from "./globalStateData.type";
 import type { EncryptedData } from "@t/encryptedData.type";
 import type { InitData } from "@t/initData.type";
+import { savePassword } from "@utils/userPasswordStore";
 
 type LoginError = 'INVALID_PASSWORD' | 'INVALID_SEED' | 'NOT_REGISTERED';
 type RegisterError = 'INVALID_SEED' | 'FAILED_TO_SAVE' | 'NO_SEED_PHRASE';
+
+const revalidateTempPassInterval = NaN;
 
 export class AuthActions extends GlobalStoreActions {
     login(password: string): Result<void, LoginError> {
@@ -55,6 +58,18 @@ export class AuthActions extends GlobalStoreActions {
 			alert('Loaded seed phrase is invalid!');
 			return Err('INVALID_SEED');
 		}
+
+		// checking if we already revalidating temp password
+		if (!isNaN(revalidateTempPassInterval)) {
+			clearInterval(revalidateTempPassInterval);
+		}
+
+		// starting new revalidation cycle
+		setInterval(() => {
+			savePassword(globalState.password);
+		}, 1000 * 60 * 3);
+
+		savePassword(globalState.password);
 
 		this.store.set(globalState);
 		goto('/');

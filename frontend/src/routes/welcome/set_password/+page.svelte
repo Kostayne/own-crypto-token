@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
 	// c
@@ -13,6 +12,7 @@
 	import { getInitStore } from '@ctx/getInitStore';
 	import { getGlobalStore } from '@ctx/getGlobalStore';
 	import { AuthActions } from '@stores/globalStore/authActions';
+	import { useAuth } from '@hooks/useAuth';
 
 	// state
 	let password = '';
@@ -52,12 +52,9 @@
 	}
 
 	// hooks
-	onMount(() => {
-		// seed phrase must be already set, otherwise redirect user
-		if (!$initDataStore.seedPhrase) {
-			goto('/welcome');
-		}
+	useAuth('init');
 
+	onMount(() => {
 		passwordErr = validatePassword('');
 		confirmErr = validatePasswordConfirm('', '');
 	});

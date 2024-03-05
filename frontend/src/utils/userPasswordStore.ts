@@ -1,3 +1,4 @@
+import CryptoJS from 'crypto-js';
 import { toResult, type Result, Err, Ok } from 'base-ts-result';
 
 const tempPasswordPrefix = '27Wg8H80_fL';
@@ -8,7 +9,7 @@ type LoadTempPasswordErr = 'TIMEOUT' | 'ACCESS_DENIED';
 /**
  * @description returns user password used in 3 minutes before
  */
-export function loadRecentPassword(): Result<string, LoadTempPasswordErr> {
+export function loadPasswordByTemporary(): Result<string, LoadTempPasswordErr> {
     // loading encrypted password from local storage
     const encryptedPasswordRes = toResult(() => localStorage.getItem(localStorageKey));
 
@@ -27,7 +28,7 @@ export function loadRecentPassword(): Result<string, LoadTempPasswordErr> {
     // trying to decrypt a password
     const tempPassword = getTempPassword();
 
-    const passDecryptionRes = toResult(() => CryptoJS.AES.decrypt(tempPassword, encryptedPass)); {
+    const passDecryptionRes = toResult(() => CryptoJS.AES.decrypt(encryptedPass, tempPassword)); {
         // too big timestamp, can't decrypt
         if (passDecryptionRes.isError) {
             // clear data & return an err
@@ -43,7 +44,7 @@ export function loadRecentPassword(): Result<string, LoadTempPasswordErr> {
  * @param password user password
  * @returns error message | undefined
  */
-export function saveTempPassword(password: string): string | undefined {
+export function savePassword(password: string): string | undefined {
     const tempPassword = getTempPassword();
 
     const encryptRes = toResult<string, Error>(() => {

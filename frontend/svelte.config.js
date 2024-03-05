@@ -22,6 +22,7 @@ const config = {
 			'@ctx/*': './src/ctx/*',
 			'@stores/*': './src/stores/*',
 			'@validators/*': './src/validators/*',
+			'@hooks/*': './src/hooks/*',
 		},
 	},
 

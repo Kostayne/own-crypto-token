@@ -1,7 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
-
 	// types
 	import type { AccountPreviewData } from '@t/accountPreviewData.type';
 	import type { GlobalStateData } from '@stores/globalStore/globalStateData.type';
@@ -18,14 +15,13 @@
 	import EditAccountsModal from './_components/modals/EditChildAccountModal.svelte';
 
 	// utils
-	import { loadEncryptedDataRaw } from '@utils/encryptedDataStore';
 	import { generateAccountPreviews } from '@utils/generateAccountPreviews';
 
 	// ctx
 	import { getGlobalStore } from '@ctx/getGlobalStore';
 
 	// shared hooks
-	import { useAuth } from '../hooks/auth';
+	import { useAuth } from '@hooks/useAuth';
 
 	// global state
 	const globalStore = getGlobalStore();
