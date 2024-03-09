@@ -22,7 +22,7 @@
 	const dispatch = createEventDispatcher();
 
 	// computed
-	$: previews = generateAccountPreviews($globalStore.walletState?.accounts || []);
+	$: previews = generateAccountPreviews($globalStore?.walletState?.accounts || []);
 
 	// hooks
 	onMount(() => {

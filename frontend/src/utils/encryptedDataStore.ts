@@ -1,5 +1,7 @@
-import type { EncryptedData } from "@t/encryptedData.type";
 import CryptoJS from "crypto-js";
+
+// types
+import type { EncryptedData } from "@t/encryptedData.type";
 
 const key = 'kreepto_wallet_encrypted';
 

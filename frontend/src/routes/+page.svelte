@@ -26,7 +26,7 @@
 	// global state
 	const globalStore = getGlobalStore();
 
-	globalStore.subscribe((newGlobalState) => {});
+	globalStore.subscribe(() => {});
 
 	// hooks
 	useAuth('loggedIn');
