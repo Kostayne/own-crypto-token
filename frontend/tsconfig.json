@@ -24,5 +24,7 @@
 			"@validators/*": ["./src/validators/*"],
 			"@hooks/*": ["./src/hooks/*"]
 		},
+
+		"types": ["@types/dom-view-transitions"]
 	},
 }
