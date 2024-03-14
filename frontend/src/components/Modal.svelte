@@ -2,6 +2,9 @@
 	import { gs } from 'get-module-style';
 	import { createEventDispatcher } from 'svelte';
 
+	// c
+	import Card from './Card.svelte';
+
 	export let title = '';
 	export let className = '';
 	export let formClassName = '';
@@ -22,13 +25,7 @@
 	on:click|self={() => dispatch('close')}
 >
 	<!-- form -->
-	<div
-		class={gs(
-			'max-w-[500px] h-fit rounded-[8px] p-4 bg-white',
-			'flex items-center flex-col shadow-md',
-			formClassName,
-		)}
-	>
+	<Card className={gs('max-w-[500px] h-fit', formClassName)}>
 		<span
 			class={gs(
 				{
@@ -47,5 +44,5 @@
 		<div class="mt-3 w-full">
 			<slot />
 		</div>
-	</div>
+	</Card>
 </div>

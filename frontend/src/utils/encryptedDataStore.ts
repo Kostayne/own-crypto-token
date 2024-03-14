@@ -11,6 +11,10 @@ export function saveEncryptedData(data: EncryptedData, password: string) {
     localStorage.setItem(key, encrypted);;
 }
 
+export function deleteEncryptedData() {
+    localStorage.setItem(key, '');
+}
+
 export function loadEncryptedDataRaw() {
     return localStorage.getItem(key);
 }

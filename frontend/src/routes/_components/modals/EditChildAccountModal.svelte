@@ -8,11 +8,11 @@
 	import TextButton from '@c/buttons/TextButton.svelte';
 
 	// ctx
-	import { getGlobalStore } from '@ctx/getGlobalStore';
+	import { getGlobalStore } from '@stores/globalStore/globalStore.selector';
 
 	// validators
 	import { validateAccountName } from '@validators/accountNameValidator';
-	import { AccountActions } from '@stores/globalStore/accountActions';
+	import { AccountActions } from '@stores/globalStore/actions/accountActions';
 
 	// props
 	export let address: string;

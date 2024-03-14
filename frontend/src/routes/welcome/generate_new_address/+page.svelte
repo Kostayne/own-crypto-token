@@ -10,7 +10,7 @@
 	import MnemonicsWarningModal from './components/MnemonicsWarningModal.svelte';
 
 	// types
-	import { getInitStore } from '@ctx/getInitStore';
+	import { getInitStore } from '@stores/initStore/initStore.selector';
 
 	// state
 	let generatedWords: string[] = [];

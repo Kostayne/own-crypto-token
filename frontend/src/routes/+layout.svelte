@@ -9,7 +9,7 @@
 	import type { GlobalStateData } from '@stores/globalStore/globalStateData.type';
 
 	// stores
-	let globalStore = writable<GlobalStateData>(undefined);
+	let globalStore = writable<GlobalStateData | undefined>(undefined);
 
 	// passing context to children
 	setContext('globalState', globalStore);

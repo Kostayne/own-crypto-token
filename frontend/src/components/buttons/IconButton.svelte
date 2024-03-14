@@ -12,8 +12,8 @@
 
 	// if all svg is a stroke we need to set stroke color
 	export let strokeOnly = false;
-	// disables fill color on hover
 	export let noFill = false;
+	export let noBgHover = false;
 </script>
 
 <button
@@ -24,17 +24,20 @@
 		className,
 		'flex items-center justify-center rounded-md aspect-square',
 		'transition hover:saturate-[1.5] disabled:saturate-[0.85]',
-		strokeOnly ? styles.btn_stroke : '',
+		strokeOnly && !noBgHover ? styles.btn_stroke : '',
 		noFill ? '' : styles.fill,
 
 		{
-			'hover:bg-blue hover:saturate-[0.5] active:bg-blue active:saturate-50 fill-blue':
-				color === 'blue',
+			'hover:bg-blue': color === 'blue' && !noBgHover,
+			'hover:saturate-[0.5] active:saturate-50 fill-blue': color === 'blue',
 
 			'hover:bg-primary fill-primary': color === 'green',
 
-			'stroke-blue hover:*:stroke-awhite': strokeOnly && color == 'blue',
-			'stroke-primary hover:*:stroke-awhite': strokeOnly && color == 'green',
+			'stroke-blue': strokeOnly && color == 'blue',
+			'stroke-primary': strokeOnly && color == 'green',
+
+			'active:bg-blue': !noBgHover,
+			'hover:*:stroke-awhite': strokeOnly && !noBgHover,
 		},
 	)}
 >

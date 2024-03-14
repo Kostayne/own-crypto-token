@@ -10,7 +10,7 @@
 	import { Mnemonic } from 'ethers';
 
 	// ctx
-	import { getInitStore } from '@ctx/getInitStore';
+	import { getInitStore } from '@stores/initStore/initStore.selector';
 
 	// state
 	let importedWordsAreValid = false;

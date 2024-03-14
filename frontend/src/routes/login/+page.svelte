@@ -1,27 +1,20 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { HDNodeWallet } from 'ethers';
 
 	// c
 	import Button from '@c/buttons/Button.svelte';
 	import Input from '@c/Input.svelte';
 	import WelcomeText from '@c/WelcomeText.svelte';
 
-	// types
-	import type { EncryptedData } from '@t/encryptedData.type';
-	import type { GlobalStateData } from '@stores/globalStore/globalStateData.type';
-
 	// validators
 	import { validatePassword } from '@validators/passwordValidator';
 
-	// utils
-	import { loadEncryptedDataRaw, loadEncryptedData } from '@utils/encryptedDataStore';
-	import { generateHDAccountsFromData } from '@utils/generateHDAccountsFromGenData';
-
 	// ctx
-	import { getGlobalStore } from '@ctx/getGlobalStore';
-	import { AuthActions } from '@stores/globalStore/authActions';
+	import { getGlobalStore } from '@stores/globalStore/globalStore.selector';
+	import { AuthActions } from '@stores/globalStore/actions/authActions';
+
+	// hooks
+	import { useAuth } from '@hooks/useAuth';
 
 	// state
 	let password = '';
@@ -32,13 +25,9 @@
 	const authActions = new AuthActions(globalStore);
 
 	// hooks
-	onMount(() => {
-		// return to welcome if there is no seed phrase
-		if (!loadEncryptedDataRaw()) {
-			goto('/welcome');
-			return;
-		}
+	useAuth('registered');
 
+	onMount(() => {
 		passwordErr = validatePassword('');
 	});
 

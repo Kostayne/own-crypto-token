@@ -9,13 +9,13 @@
 	import TextButton from '@c/buttons/TextButton.svelte';
 
 	// ctx
-	import { getGlobalStore } from '@ctx/getGlobalStore';
+	import { getGlobalStore } from '@stores/globalStore/globalStore.selector';
 	import { clipAddress } from '@utils/clipAddress';
 
 	// validators
 	import { validateAccountIndex } from '@validators/accountIndexValidator';
 	import { validateAccountName } from '@validators/accountNameValidator';
-	import { AccountActions } from '@stores/globalStore/accountActions';
+	import { AccountActions } from '@stores/globalStore/actions/accountActions';
 
 	// global state
 	const globalStore = getGlobalStore();

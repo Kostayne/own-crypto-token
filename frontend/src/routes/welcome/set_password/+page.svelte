@@ -5,13 +5,15 @@
 	import Input from '@c/Input.svelte';
 	import Button from '@c/buttons/Button.svelte';
 
-	// utils
+	// validators
 	import { validatePassword, validatePasswordConfirm } from '@validators/passwordValidator';
 
 	// ctx
-	import { getInitStore } from '@ctx/getInitStore';
-	import { getGlobalStore } from '@ctx/getGlobalStore';
-	import { AuthActions } from '@stores/globalStore/authActions';
+	import { getInitStore } from '@stores/initStore/initStore.selector';
+	import { getGlobalStore } from '@stores/globalStore/globalStore.selector';
+	import { AuthActions } from '@stores/globalStore/actions/authActions';
+
+	// hooks
 	import { useAuth } from '@hooks/useAuth';
 
 	// state

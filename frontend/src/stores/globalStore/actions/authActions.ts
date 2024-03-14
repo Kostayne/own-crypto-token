@@ -4,17 +4,17 @@ import { get, type Writable } from "svelte/store";
 import { Err, Ok, toResult, type Result } from "base-ts-result";
 
 // class
-import { GlobalStoreActions } from "./globalStoreActions";
+import { GlobalStoreActions } from "../globalStoreActions";
 
 // utils
-import { loadEncryptedData, loadEncryptedDataRaw, saveEncryptedData } from "@utils/encryptedDataStore";
+import { deleteEncryptedData, loadEncryptedData, loadEncryptedDataRaw, saveEncryptedData } from "@utils/encryptedDataStore";
 import { generateHDAccountsFromData } from "@utils/generateHDAccountsFromGenData";
+import { savePassword } from "@utils/userPasswordStore";
 
 // types
-import type { GlobalStateData } from "./globalStateData.type";
+import type { GlobalStateData } from "../globalStateData.type";
 import type { EncryptedData } from "@t/encryptedData.type";
-import type { InitData } from "@t/initData.type";
-import { savePassword } from "@utils/userPasswordStore";
+import type { InitData } from "@stores/initStore/initData.type";
 
 type LoginError = 'INVALID_PASSWORD' | 'INVALID_SEED' | 'NOT_REGISTERED';
 type RegisterError = 'INVALID_SEED' | 'FAILED_TO_SAVE' | 'NO_SEED_PHRASE';
@@ -130,5 +130,12 @@ export class AuthActions extends GlobalStoreActions {
 
 		goto('/');
 		return Ok(undefined);
+	}
+
+	logout() {
+		// delete global state
+		deleteEncryptedData();
+		this.store.set(undefined as unknown as GlobalStateData);
+		goto('/welcome');
 	}
 }

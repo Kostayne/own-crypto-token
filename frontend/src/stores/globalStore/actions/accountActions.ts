@@ -2,7 +2,7 @@ import { get } from "svelte/store";
 
 // types
 import type { HDAccount } from "@t/hdAccount.type";
-import { GlobalStoreActions } from "./globalStoreActions";
+import { GlobalStoreActions } from "../globalStoreActions";
 
 // utils
 import { saveEncryptedData } from "@utils/encryptedDataStore";

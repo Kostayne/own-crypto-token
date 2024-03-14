@@ -18,7 +18,7 @@
 	import { generateAccountPreviews } from '@utils/generateAccountPreviews';
 
 	// ctx
-	import { getGlobalStore } from '@ctx/getGlobalStore';
+	import { getGlobalStore } from '@stores/globalStore/globalStore.selector';
 
 	// shared hooks
 	import { useAuth } from '@hooks/useAuth';

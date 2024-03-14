@@ -11,8 +11,8 @@
 	import { generateAccountPreviews } from '@utils/generateAccountPreviews';
 
 	// ctx
-	import { getGlobalStore } from '@ctx/getGlobalStore';
-	import { AccountActions } from '@stores/globalStore/accountActions';
+	import { getGlobalStore } from '@stores/globalStore/globalStore.selector';
+	import { AccountActions } from '@stores/globalStore/actions/accountActions';
 
 	// global state
 	const globalStore = getGlobalStore();

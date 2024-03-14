@@ -4,7 +4,7 @@
 
 	// c
 	import WelcomeText from '@c/WelcomeText.svelte';
-	import type { InitData } from '@t/initData.type';
+	import type { InitData } from '@stores/initStore/initData.type';
 
 	// create initData store & ctx
 	const initData = writable<InitData>({});

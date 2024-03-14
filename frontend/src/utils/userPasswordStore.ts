@@ -37,13 +37,15 @@ export function loadPasswordByTemporary(): Result<string, LoadTempPasswordErr> {
         }
     }
 
-    const resStr = passDecryptionRes.unwrap().toString(CryptoJS.enc.Utf8);
+    const strRes = toResult(() => {
+        return passDecryptionRes.unwrap().toString(CryptoJS.enc.Utf8);
+    });
 
-    if (resStr === '') {
+    if (strRes.isError || strRes.unwrap() === '') {
         return Err<LoadTempPasswordErr>('TIMEOUT');
     }
 
-    return Ok(resStr);
+    return Ok(strRes.unwrap());
 }
 
 /**
