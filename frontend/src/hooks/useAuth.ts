@@ -18,7 +18,7 @@ import { loadPasswordByTemporary } from '@utils/userPasswordStore';
  */
 type AuthType = 'init' | 'registered' | 'loggedIn';
 
-export function useAuth(type: AuthType) {
+export function useAuth(type: AuthType, destPath = '/') {
     // global state
 	const globalStore = getGlobalStore();
 	const initStore = getInitStore();
@@ -65,12 +65,15 @@ export function useAuth(type: AuthType) {
 		const passwordRes = loadPasswordByTemporary(); {
 			// temp password failed, redirecting
 			if (passwordRes.isError) {
-				goto('/login');
+				const sp = new URLSearchParams();
+				sp.append('dest', destPath);
+				goto(`/login?${sp}`);
+
 				return;
 			}
 		}
 
 		const actions = new AuthActions(globalStore);
-		actions.login(passwordRes.unwrap());
+		actions.login(passwordRes.unwrap(), destPath);
 	});
 }

@@ -13,8 +13,6 @@
 
 <WelcomeText />
 
-<main>
-	<div class="flex flex-col mt-5">
-		<slot />
-	</div>
-</main>
+<div class="mt-5">
+	<slot />
+</div>

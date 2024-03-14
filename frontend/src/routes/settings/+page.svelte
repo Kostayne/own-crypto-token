@@ -12,11 +12,19 @@
 
 	// icons
 	import RmSvg from '@icons/rm.svg?component';
+	import { useAuth } from '@hooks/useAuth';
 
 	// ctx
 	const globalStore = getGlobalStore();
 	const authActions = new AuthActions(globalStore);
+
+	// hooks
+	useAuth('loggedIn', '/settings');
 </script>
+
+<svelte:head>
+	<title>Kreepto settings</title>
+</svelte:head>
 
 <main class="mx-auto max-w-[375px]">
 	<!-- Settings X -->

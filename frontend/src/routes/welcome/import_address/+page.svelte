@@ -1,13 +1,11 @@
 <script lang="ts">
+	import { Mnemonic } from 'ethers';
 	import { goto } from '$app/navigation';
 
 	// c
 	import Button from '@c/buttons/Button.svelte';
 	import TextButton from '@c/buttons/TextButton.svelte';
 	import WordsInput from './components/WordsInput.svelte';
-
-	// types
-	import { Mnemonic } from 'ethers';
 
 	// ctx
 	import { getInitStore } from '@stores/initStore/initStore.selector';
@@ -48,23 +46,25 @@
 	<title>Import address</title>
 </svelte:head>
 
-<WordsInput
-	on:validated={(e) => {
-		importedWordsAreValid = e.detail;
-	}}
-	bind:this={wordsInputRef}
-	words={importedWords}
-	className="mb-6"
-/>
+<main class="flex flex-col w-full">
+	<WordsInput
+		on:validated={(e) => {
+			importedWordsAreValid = e.detail;
+		}}
+		bind:this={wordsInputRef}
+		words={importedWords}
+		className="mb-6"
+	/>
 
-<Button
-	disabled={!importedWordsAreValid}
-	className="mx-auto w-full max-w-[280px]"
-	on:click={onImportExistingClick}
->
-	Continue
-</Button>
+	<Button
+		disabled={!importedWordsAreValid}
+		className="mx-auto w-full max-w-[280px]"
+		on:click={onImportExistingClick}
+	>
+		Continue
+	</Button>
 
-<a class="w-fit mx-auto" href="/welcome/generate_new_address">
-	<TextButton className="mt-3">Generate new address</TextButton>
-</a>
+	<a class="w-fit mx-auto" href="/welcome/generate_new_address">
+		<TextButton className="mt-3">Generate new address</TextButton>
+	</a>
+</main>

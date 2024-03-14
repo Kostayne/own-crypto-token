@@ -9,10 +9,12 @@
 </svelte:head>
 
 <!-- Just links to action pages -->
-<a href="/welcome/generate_new_address">
-	<Button className="mx-auto w-full max-w-[280px]">Generate new address</Button>
-</a>
+<main class="flex flex-col w-full">
+	<a href="/welcome/generate_new_address">
+		<Button className="mx-auto w-full max-w-[280px]">Generate new address</Button>
+	</a>
 
-<a class="w-fit mx-auto" href="/welcome/import_address">
-	<TextButton className="mt-3">Import existing</TextButton>
-</a>
+	<a class="w-fit mx-auto" href="/welcome/import_address">
+		<TextButton className="mt-3">Import existing</TextButton>
+	</a>
+</main>

@@ -22,7 +22,7 @@ type RegisterError = 'INVALID_SEED' | 'FAILED_TO_SAVE' | 'NO_SEED_PHRASE';
 const revalidateTempPassInterval = NaN;
 
 export class AuthActions extends GlobalStoreActions {
-    login(password: string): Result<void, LoginError> {
+    login(password: string, destPath = '/'): Result<void, LoginError> {
 		// redir to welcome if no secret phrase stored
 		if (!loadEncryptedDataRaw()) {
 			goto('/welcome');
@@ -72,7 +72,7 @@ export class AuthActions extends GlobalStoreActions {
 		savePassword(globalState.password);
 
 		this.store.set(globalState);
-		goto('/');
+		goto(destPath);
 
         return Ok(undefined);
     }

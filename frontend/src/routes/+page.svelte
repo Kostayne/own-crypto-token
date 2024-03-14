@@ -67,7 +67,7 @@
 	<title>Kreepto wallet</title>
 </svelte:head>
 
-<main class="mx-auto max-w-[425px] relative flex flex-col items-center">
+<main class="relative flex flex-col items-center">
 	<IconButton
 		color="green"
 		className="p-1 absolute left-0 top-0 select-none"

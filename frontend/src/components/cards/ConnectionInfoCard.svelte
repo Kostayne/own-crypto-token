@@ -8,23 +8,42 @@
 
 	// props
 	export let className = '';
+	export let isCollapsible = true;
 
 	// state
 	let isOpened = false;
 </script>
 
 <Card className={gs('', className)}>
-	<Collapsible bind:isOpened className="w-full">
-		<span slot="head">Connection settings</span>
+	{#if isCollapsible}
+		<Collapsible bind:isOpened className="w-full">
+			<span slot="head">Connection settings</span>
 
-		<ConnectionInfoForm
-			className="mt-4"
-			on:save={() => {
-				isOpened = false;
-			}}
-			on:cancel={() => {
-				isOpened = false;
-			}}
-		/>
-	</Collapsible>
+			<ConnectionInfoForm
+				className="mt-4"
+				on:save={() => {
+					isOpened = false;
+				}}
+				on:cancel={() => {
+					isOpened = false;
+				}}
+			/>
+		</Collapsible>
+	{/if}
+
+	{#if !isCollapsible}
+		<div class={'w-full'}>
+			<span class="text-primary font-medium">Connection settings</span>
+
+			<ConnectionInfoForm
+				className="mt-4"
+				on:save={() => {
+					isOpened = false;
+				}}
+				on:cancel={() => {
+					isOpened = false;
+				}}
+			/>
+		</div>
+	{/if}
 </Card>

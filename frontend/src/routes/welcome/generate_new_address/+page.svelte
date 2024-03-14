@@ -58,18 +58,20 @@
 	<title>Generate new address</title>
 </svelte:head>
 
-{#if generatedWords.length > 0}
-	<WordsList className="mx-auto mb-6" addresses={generatedWords} />
-{/if}
+<main class="flex flex-col w-full">
+	{#if generatedWords.length > 0}
+		<WordsList className="mx-auto mb-6" addresses={generatedWords} />
+	{/if}
 
-{#if isShowingMnemonicsWarning}
-	<MnemonicsWarningModal on:close={() => (isShowingMnemonicsWarning = false)} />
-{/if}
+	{#if isShowingMnemonicsWarning}
+		<MnemonicsWarningModal on:close={() => (isShowingMnemonicsWarning = false)} />
+	{/if}
 
-<Button className="mx-auto w-full max-w-[280px]" on:click={onGenerateNewAddressClick}>
-	Continue with generated address
-</Button>
+	<Button className="mx-auto w-full max-w-[280px]" on:click={onGenerateNewAddressClick}>
+		Continue with generated address
+	</Button>
 
-<a class="mx-auto w-fit" href="/welcome/import_address">
-	<TextButton className="mt-3">Import existing</TextButton>
-</a>
+	<a class="mx-auto w-fit" href="/welcome/import_address">
+		<TextButton className="mt-3">Import existing</TextButton>
+	</a>
+</main>

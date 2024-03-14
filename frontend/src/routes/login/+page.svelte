@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 
 	// c
 	import Button from '@c/buttons/Button.svelte';
@@ -9,7 +10,7 @@
 	// validators
 	import { validatePassword } from '@validators/passwordValidator';
 
-	// ctx
+	// stores
 	import { getGlobalStore } from '@stores/globalStore/globalStore.selector';
 	import { AuthActions } from '@stores/globalStore/actions/authActions';
 
@@ -38,7 +39,9 @@
 			return;
 		}
 
-		const res = authActions.login(password);
+		const dest = $page.url.searchParams.get('dest') || '/';
+
+		const res = authActions.login(password, dest);
 		{
 			if (res.isError && res.unwrapErr() === 'INVALID_PASSWORD') {
 				passwordErr = 'Invalid password';
