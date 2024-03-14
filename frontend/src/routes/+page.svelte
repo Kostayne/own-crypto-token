@@ -13,6 +13,10 @@
 	import CreateChildAccountModal from './_components/modals/CreateChildAccountModal.svelte';
 	import ManageAccountsModal from './_components/modals/ManageAccountsModal.svelte';
 	import EditAccountsModal from './_components/modals/EditChildAccountModal.svelte';
+	import IconButton from '@c/buttons/IconButton.svelte';
+
+	// icons
+	import GearIcon from '@icons/gear.svg?component';
 
 	// utils
 	import { generateAccountPreviews } from '@utils/generateAccountPreviews';
@@ -22,6 +26,7 @@
 
 	// shared hooks
 	import { useAuth } from '@hooks/useAuth';
+	import { goto } from '$app/navigation';
 
 	// global state
 	const globalStore = getGlobalStore();
@@ -62,7 +67,17 @@
 	<title>Kreepto wallet</title>
 </svelte:head>
 
-<main class="flex flex-col items-center">
+<main class="mx-auto max-w-[425px] relative flex flex-col items-center">
+	<IconButton
+		color="green"
+		className="p-1 absolute left-0 top-0 select-none"
+		on:click={() => {
+			goto('/settings');
+		}}
+	>
+		<GearIcon />
+	</IconButton>
+
 	<span class="font-medium">{tokenName}</span>
 	<span class="font-medium text-[0.8rem]">Total supply: 500KST</span>
 

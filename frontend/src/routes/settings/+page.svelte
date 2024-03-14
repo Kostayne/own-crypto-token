@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	// c
 	import Button from '@c/buttons/Button.svelte';
 	import IconButton from '@c/buttons/IconButton.svelte';
@@ -21,7 +23,14 @@
 	<div class="flex justify-between items-center">
 		<h1 class="text-blue text-xl font-medium">Settings</h1>
 
-		<IconButton noBgHover color="blue" strokeOnly>
+		<IconButton
+			noBgHover
+			color="blue"
+			strokeOnly
+			on:click={() => {
+				goto('/');
+			}}
+		>
 			<RmSvg stroke-width="2.5" width={20} height={20} />
 		</IconButton>
 	</div>
