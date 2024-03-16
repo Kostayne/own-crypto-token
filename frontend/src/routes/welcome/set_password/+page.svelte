@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import toast from 'svelte-french-toast';
 
 	// c
 	import Input from '@c/Input.svelte';
@@ -45,11 +46,11 @@
 		const err = res.unwrapErr();
 
 		if (err === 'INVALID_SEED') {
-			alert('Your seed is invalid!');
+			toast.error('Your seed is invalid!');
 		}
 
 		if (err === 'FAILED_TO_SAVE') {
-			alert('Failed to save!');
+			toast.error('Failed to save!');
 		}
 	}
 

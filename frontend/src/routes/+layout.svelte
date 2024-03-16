@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
+	import { onNavigate } from '$app/navigation';
+	import { Toaster } from 'svelte-french-toast';
 
 	// styles
 	import '../app.css';
 
 	// types
 	import type { GlobalStateData } from '@stores/globalStore/globalStateData.type';
-	import { onNavigate } from '$app/navigation';
 
 	// stores
 	let globalStore = writable<GlobalStateData | undefined>(undefined);
@@ -30,3 +31,5 @@
 </script>
 
 <slot />
+
+<Toaster toastOptions={{ duration: 2000 }} position="top-right" />

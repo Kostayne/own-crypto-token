@@ -2,7 +2,7 @@ import type { ApiConnectionSettings } from "./ConnectionData/apiConnectionSettin
 import type { RpcConnectionSettings } from "./ConnectionData/rpcConnectionSettings.type";
 
 export interface ConnectionData {
-    type: 'RPC' | 'API';
+    type: 'rpc' | 'api';
     rpc?: RpcConnectionSettings;
     api?: ApiConnectionSettings;
 }

@@ -1,5 +1,6 @@
 import { get } from "svelte/store";
-import { Err, Ok, type Result } from "base-ts-result";
+import { Err, Ok, toResult, type Result, toResultAsync, type AsyncResult } from "base-ts-result";
+import toast from "svelte-french-toast";
 
 import { 
     JsonRpcProvider, 
@@ -7,16 +8,23 @@ import {
     CloudflareProvider, 
     PocketProvider, 
     AlchemyProvider, 
-    AnkrProvider, 
-    EtherscanProvider,
-    type Provider, 
+    AnkrProvider,
+    Contract, 
 } from 'ethers';
 
 // types
 import type { ConnectionData } from "@t/connectionData.type";
+import type { EstablishConnectionErrT } from "@t/errors/establishConnectionError.type";
 
 // actions
 import { GlobalStoreActions } from "../globalStoreActions"
+
+// utils
+import { saveEncryptedData } from "@utils/encryptedDataStore";
+
+// cfg
+import { contractAbi, contractAddress } from "@src/cfg";
+
 
 // custom types
 type GetProviderErr = 'NO_DATA' | 'INVALID_TYPE' | 'INVALID_PLATFORM';
@@ -25,10 +33,17 @@ export class ConnectionActions extends GlobalStoreActions {
     public setConnectionData(data: ConnectionData) {
         const globalState = { ...get(this.store) };
         globalState.encrypted.connectionData = data;
+        this.store.set(globalState);
+
+        const saveRes = toResult(() => saveEncryptedData(globalState.encrypted, globalState.password)); {
+            if (saveRes.isError) {
+                toast.error('Failed to save connection settings!');
+            }
+        }
     }
 
-    private getProvider(data: ConnectionData): Result<Provider, GetProviderErr> {
-        if (data.type === 'RPC') {
+    private getProvider(data: ConnectionData): Result<JsonRpcProvider, GetProviderErr> {
+        if (data.type === 'rpc') {
             if (!data.rpc) {
                 return Err('NO_DATA');
             }
@@ -39,7 +54,7 @@ export class ConnectionActions extends GlobalStoreActions {
             ));
         }
 
-        if (data.type === 'API') {
+        if (data.type === 'api') {
             if (!data.api) {
                 return Err('NO_DATA');
             }
@@ -55,9 +70,6 @@ export class ConnectionActions extends GlobalStoreActions {
 
                 case 'cloudflare':
                     return Ok(new CloudflareProvider(network));
-
-                case 'etherscan':
-                    return Ok(new EtherscanProvider(network, apiKey));
 
                 case 'infura':
                     if (!infura) {
@@ -81,7 +93,46 @@ export class ConnectionActions extends GlobalStoreActions {
         return Err('INVALID_TYPE');
     }
 
-    public establishConnection() {
-        
+    public async establishConnection(): AsyncResult<void, EstablishConnectionErrT> {
+        const globalState = {...get(this.store)};
+        const connData = globalState.encrypted.connectionData;
+
+        // getting an ethereum blockchain provider
+        const providerRes = this.getProvider(connData); {
+            if (providerRes.isError) {
+                console.error(providerRes.unwrapErr());
+                return Err('PROVIDER_ERR');
+            }
+        }
+
+        // applying current address to the provider
+        const signerRes = await toResultAsync(() => providerRes.unwrap().getSigner()); {
+            if (signerRes.isError) {
+                console.error(signerRes.unwrapErr());
+                return Err('SIGNER_ERR');
+            }
+        }
+
+        // getting a contract instance
+        const contractRes = toResult(() => new Contract(contractAddress, contractAbi, signerRes.unwrap())); {
+            if (contractRes.isError) {
+                console.error(contractRes.unwrapErr());
+                return Err('CONTRACT_ERR');
+            }
+        };
+
+        const accSignerRes = toResult(() => contractRes.unwrap()
+            .connect(globalState.walletState.selectedWallet)
+        ); {
+            if (accSignerRes.isError) {
+                console.error(accSignerRes.unwrapErr());
+                return Err('SIGNER_ERR');
+            }
+        }
+
+        // successfully created a contract instance to interact with
+        // blockchain from selected address
+        globalState.walletState.contract = accSignerRes.unwrap();
+        return Ok(undefined);
     }
 }

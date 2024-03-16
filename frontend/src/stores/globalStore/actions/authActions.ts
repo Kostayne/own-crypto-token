@@ -2,6 +2,7 @@ import { goto } from "$app/navigation";
 import { HDNodeWallet } from "ethers/wallet";
 import { get, type Writable } from "svelte/store";
 import { Err, Ok, toResult, type Result } from "base-ts-result";
+import toast from "svelte-french-toast";
 
 // class
 import { GlobalStoreActions } from "../globalStoreActions";
@@ -55,7 +56,7 @@ export class AuthActions extends GlobalStoreActions {
 				selectedWallet: mainWallet,
 			};
 		} catch (e) {
-			alert('Loaded seed phrase is invalid!');
+			toast.error('Loaded seed phrase is invalid!');
 			return Err('INVALID_SEED');
 		}
 
@@ -113,7 +114,7 @@ export class AuthActions extends GlobalStoreActions {
 			seedPhrase: get(initDataStore).seedPhrase as string,
 
 			connectionData: {
-				type: 'API',
+				type: 'api',
 			},
 		};
 
@@ -128,7 +129,7 @@ export class AuthActions extends GlobalStoreActions {
 			}
 		}
 
-		goto('/');
+		goto('/welcome/set_up_connection');
 		return Ok(undefined);
 	}
 

@@ -23,6 +23,7 @@ const config = {
 			'@stores/*': './src/stores/*',
 			'@validators/*': './src/validators/*',
 			'@hooks/*': './src/hooks/*',
+			'@src/*': './src/*',
 		},
 	},
 

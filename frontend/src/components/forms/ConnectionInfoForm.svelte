@@ -7,36 +7,47 @@
 	import Input from '@c/Input.svelte';
 	import Button from '@c/buttons/Button.svelte';
 
+	// store
+	import { getGlobalStore } from '@stores/globalStore/globalStore.selector';
+	import { ConnectionActions } from '@stores/globalStore/actions/connectionActions';
+
 	// types
 	import type { ApiConnectionSettings } from '@t/ConnectionData/apiConnectionSettings.type';
 	import type { SelectOptionType } from '@t/selectOption.type';
+	import type { ConnectionData } from '@t/connectionData.type';
 
 	// validators
 	import { validateRequiredStr } from '@validators/requiredStrValidator';
 
 	// props
 	export let className = '';
+	export let hideCancelButton = false;
+
+	// store
+	const globalStore = getGlobalStore();
+	const actions = new ConnectionActions(globalStore);
+	const connData = $globalStore?.encrypted?.connectionData;
 
 	const dispatch = createEventDispatcher();
 
 	// state
-	let connectionType: 'rpc' | 'api' = 'api';
+	let connectionType: 'rpc' | 'api' = connData?.type || 'rpc';
 
 	// apiState
-	let apiPlatform: ApiConnectionSettings['platform'] = 'infura';
-	let apiNetwork: ApiConnectionSettings['network'] = 'goerli';
-	let apiKey = '';
+	let apiPlatform: ApiConnectionSettings['platform'] = connData?.api?.platform || 'infura';
+	let apiNetwork: ApiConnectionSettings['network'] = connData?.api?.network || 'goerli';
+	let apiKey = connData?.api?.apiKey || '';
 
 	// api -> infura
-	let infuraProjectId = '';
-	let infuraSecret = '';
+	let infuraProjectId = connData?.api?.infura?.projectId || '';
+	let infuraSecret = connData?.api?.infura?.projectSecret || '';
 
 	// api -> pocket
-	let pocketId = '';
-	let pocketSecret = '';
+	let pocketId = connData?.api?.pocket?.appId || '';
+	let pocketSecret = connData?.api?.pocket?.appSecret || '';
 
 	// rpcState
-	let rpcUrl = '';
+	let rpcUrl = connData?.rpc?.url || '';
 
 	// options
 	const platformSelectItems: SelectOptionType<ApiConnectionSettings['platform']>[] = [
@@ -53,11 +64,6 @@
 		{
 			value: 'cloudflare',
 			label: 'Cloudflare',
-		},
-
-		{
-			value: 'etherscan',
-			label: 'Etherscan',
 		},
 
 		{
@@ -92,7 +98,10 @@
 
 	$: rpcUrlErr = validateRequiredStr(rpcUrl);
 
-	const getIsFormValid = (...args: any[]): boolean => {
+	// utils
+	// ===============
+	// we need to define args so svelte can react on changes
+	const getIsFormValid = (..._args: any[]): boolean => {
 		if (connectionType === 'rpc') {
 			return rpcUrlErr === '';
 		}
@@ -118,6 +127,49 @@
 		return false;
 	};
 
+	const getConnectionData = (): ConnectionData => {
+		return {
+			type: connectionType,
+
+			api: {
+				apiKey,
+				network: apiNetwork,
+
+				platform: apiPlatform,
+
+				infura: {
+					projectId: infuraProjectId,
+					projectSecret: infuraSecret,
+				},
+
+				pocket: {
+					appId: pocketId,
+					appSecret: pocketSecret,
+				},
+			},
+
+			rpc: {
+				url: rpcUrl,
+			},
+		};
+	};
+
+	// events handlers
+	const onSaveClick = async () => {
+		actions.setConnectionData(getConnectionData());
+		const connRes = await actions.establishConnection();
+
+		// passing error to parent component
+		// which will display the error form
+		if (connRes.isError) {
+			dispatch('connectionErr', connRes.unwrapErr());
+			return;
+		}
+
+		dispatch('connectionSuccess');
+	};
+
+	// computed
 	$: isSubmitDisabled = !getIsFormValid(
 		rpcUrlErr,
 		apiKeyErr,
@@ -128,6 +180,7 @@
 	);
 </script>
 
+<!-- Connection type span with selector, inlined -->
 <div class={gs(className, 'flex items-center justify-between gap-3')}>
 	<span class="flex-shrink-0">Connection type</span>
 
@@ -142,6 +195,7 @@
 	/>
 </div>
 
+<!-- api specific inputs -->
 {#if connectionType === 'api'}
 	<!-- svelte-ignore a11y-label-has-associated-control -->
 	<label class="flex flex-col gap-2 mt-2">
@@ -172,22 +226,26 @@
 		/>
 	</label>
 
+	<!-- infura specific -->
 	{#if apiPlatform === 'infura'}
 		<Input bind:value={infuraProjectId} error={infuraIdErr} label="Project id" className="mt-3" />
 
 		<Input bind:value={infuraSecret} error={infuraSecretErr} label="Secret" className="mt-3" />
 	{/if}
 
+	<!-- pocket specific -->
 	{#if apiPlatform === 'pocket'}
 		<Input bind:value={pocketId} error={pocketIdErr} label="App id" className="mt-3" />
 		<Input bind:value={pocketSecret} error={pocketSecretErr} label="Secret" className="mt-3" />
 	{/if}
 
+	<!-- a common field for many api platforms -->
 	{#if !['infura', 'pocket', 'cloudflare'].includes(apiPlatform)}
 		<Input bind:value={apiKey} error={apiKeyErr} label="Api key" className="mt-3" />
 	{/if}
 {/if}
 
+<!-- rpc specific -->
 {#if connectionType === 'rpc'}
 	<Input bind:value={rpcUrl} error={rpcUrlErr} label="Url" className="mt-2 w-full" />
 {/if}
@@ -196,25 +254,13 @@
 	<Button
 		type="primary"
 		disabled={isSubmitDisabled}
-		className="w-[115px]"
-		on:click={() => {
-			dispatch('save', {
-				apiKey,
-				apiPlatform,
-				apiNetwork,
-
-				infuraProjectId,
-				infuraSecret,
-
-				pocketId,
-				pocketSecret,
-
-				rpcUrl,
-			});
-		}}
+		className={gs(hideCancelButton ? 'w-full max-w-full' : 'w-[115px]')}
+		on:click={onSaveClick}
 	>
 		SAVE
 	</Button>
 
-	<Button type="secondary" on:click={() => dispatch('cancel')}>CANCEL</Button>
+	{#if !hideCancelButton}
+		<Button type="secondary" on:click={() => dispatch('cancel')}>CANCEL</Button>
+	{/if}
 </div>

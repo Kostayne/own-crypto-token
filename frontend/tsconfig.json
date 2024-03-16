@@ -22,7 +22,8 @@
 			"@ctx/*": ["./src/ctx/*"],
 			"@stores/*": ["./src/stores/*"],
 			"@validators/*": ["./src/validators/*"],
-			"@hooks/*": ["./src/hooks/*"]
+			"@hooks/*": ["./src/hooks/*"],
+			"@src/*": ["./src/*"],
 		},
 
 		"types": ["@types/dom-view-transitions"]

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Mnemonic } from 'ethers';
 	import { goto } from '$app/navigation';
+	import toast from 'svelte-french-toast';
 
 	// c
 	import Button from '@c/buttons/Button.svelte';
@@ -30,7 +31,10 @@
 
 		// validating seed phrase
 		if (!Mnemonic.isValidMnemonic(seedPhrase)) {
-			alert('Your seed phrase is not valid!');
+			toast.error('Your seed phrase is not valid!', {
+				position: 'top-center',
+			});
+
 			return;
 		}
 

@@ -14,14 +14,15 @@
 	let isOpened = false;
 </script>
 
-<Card className={gs('', className)}>
+<Card className={gs(className)}>
 	{#if isCollapsible}
 		<Collapsible bind:isOpened className="w-full">
 			<span slot="head">Connection settings</span>
 
 			<ConnectionInfoForm
 				className="mt-4"
-				on:save={() => {
+				on:connectionErr
+				on:connectionSuccess={() => {
 					isOpened = false;
 				}}
 				on:cancel={() => {
@@ -37,12 +38,10 @@
 
 			<ConnectionInfoForm
 				className="mt-4"
-				on:save={() => {
-					isOpened = false;
-				}}
-				on:cancel={() => {
-					isOpened = false;
-				}}
+				hideCancelButton
+				on:connectionSuccess
+				on:connectionErr
+				on:cancel
 			/>
 		</div>
 	{/if}

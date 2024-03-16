@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { HDNodeWallet } from 'ethers';
+	import toast from 'svelte-french-toast';
 
 	// c
 	import Input from '@c/Input.svelte';
@@ -37,7 +38,7 @@
 		const index = parseInt(indexStr);
 
 		if (!wallet) {
-			alert('There is no account wallet to save!');
+			toast.error('There is no account wallet to save!');
 			return;
 		}
 
@@ -48,12 +49,12 @@
 		});
 
 		if (err === 'FAILED_TO_SAVE') {
-			alert('Failed to save. Is localStorage allowed?');
+			toast.error('Failed to save. Is localStorage allowed?');
 			return;
 		}
 
 		if (err === 'NOT_AUTHORIZED') {
-			alert('Unauthorized');
+			toast.error('Unauthorized');
 			return;
 		}
 
