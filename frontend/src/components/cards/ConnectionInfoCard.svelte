@@ -21,7 +21,6 @@
 
 			<ConnectionInfoForm
 				className="mt-4"
-				on:connectionErr
 				on:connectionSuccess={() => {
 					isOpened = false;
 				}}
@@ -36,13 +35,7 @@
 		<div class={'w-full'}>
 			<span class="text-primary font-medium">Connection settings</span>
 
-			<ConnectionInfoForm
-				className="mt-4"
-				hideCancelButton
-				on:connectionSuccess
-				on:connectionErr
-				on:cancel
-			/>
+			<ConnectionInfoForm className="mt-4" hideCancelButton />
 		</div>
 	{/if}
 </Card>

@@ -12,12 +12,14 @@
 	import { ConnectionActions } from '@stores/globalStore/actions/connectionActions';
 
 	// types
+	import type { EstablishConnectionErrT } from '@t/errors/establishConnectionError.type';
 	import type { ApiConnectionSettings } from '@t/ConnectionData/apiConnectionSettings.type';
 	import type { SelectOptionType } from '@t/selectOption.type';
 	import type { ConnectionData } from '@t/connectionData.type';
 
 	// validators
 	import { validateRequiredStr } from '@validators/requiredStrValidator';
+	import ConnectionErrorModal from '@c/modals/ConnectionErrorModal.svelte';
 
 	// props
 	export let className = '';
@@ -32,6 +34,7 @@
 
 	// state
 	let connectionType: 'rpc' | 'api' = connData?.type || 'rpc';
+	let connectionErr: EstablishConnectionErrT | '' = '';
 
 	// apiState
 	let apiPlatform: ApiConnectionSettings['platform'] = connData?.api?.platform || 'infura';
@@ -162,6 +165,7 @@
 		// passing error to parent component
 		// which will display the error form
 		if (connRes.isError) {
+			connectionErr = connRes.unwrapErr();
 			dispatch('connectionErr', connRes.unwrapErr());
 			return;
 		}
@@ -264,3 +268,12 @@
 		<Button type="secondary" on:click={() => dispatch('cancel')}>CANCEL</Button>
 	{/if}
 </div>
+
+{#if connectionErr}
+	<ConnectionErrorModal
+		errorType={connectionErr}
+		on:close={() => {
+			connectionErr = '';
+		}}
+	/>
+{/if}

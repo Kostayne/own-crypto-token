@@ -43,7 +43,7 @@
 		</IconButton>
 	</div>
 
-	<ConnectionInfoCard className="mt-4" />
+	<ConnectionInfoCard isCollapsible className="mt-4" />
 
 	<Button
 		className="mt-5 mx-auto"

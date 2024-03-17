@@ -5,12 +5,14 @@
 	// types
 	import type { AccountPreviewData } from '@t/accountPreviewData.type';
 	import type { GlobalStateData } from '@stores/globalStore/globalStateData.type';
+	import type { EstablishConnectionErrT } from '@t/errors/establishConnectionError.type';
 
 	// cfg
 	import { tokenName, tokenSymbol } from '../cfg';
 
 	// components
 	import IconButton from '@c/buttons/IconButton.svelte';
+	import ConnectionErrorModal from '@c/modals/ConnectionErrorModal.svelte';
 	import UserActionsList from './_components/UserActionsList.svelte';
 	import AdminActionsList from './_components/AdminActionsList.svelte';
 	import AccountSelect from './_components/AccountSelect.svelte';
@@ -41,28 +43,34 @@
 	const contract = $globalStore?.walletState?.contract;
 	const selectedWallet = $globalStore?.walletState?.selectedWallet;
 
-	// hooks
-	useAuth('loggedIn');
-
-	onMount(() => {
-		if (!$globalStore?.password) {
-			return;
-		}
-
-		if (!contract) {
-			connActions.establishConnection();
-		}
-	});
-
 	// state
 	let isShowingAccountManagement = false;
 	let isShowingCreateAccount = false;
 	let isShowingEditAccount = false;
 
+	let connectionErr: EstablishConnectionErrT | '' = '';
+
 	// address of account to edit in editAccountModal
 	let editingAccAddress = '';
 
 	let selectedAccBalance = 0;
+
+	// hooks
+	useAuth('loggedIn');
+
+	onMount(async () => {
+		if (!$globalStore?.password) {
+			return;
+		}
+
+		if (!contract) {
+			const res = await connActions.establishConnection();
+
+			if (res.isError) {
+				connectionErr = res.unwrapErr();
+			}
+		}
+	});
 
 	// helpers
 	const getAccountPreviews = (globalState: GlobalStateData): AccountPreviewData[] => {
@@ -147,6 +155,15 @@
 			on:close={() => {
 				isShowingEditAccount = false;
 				isShowingAccountManagement = true;
+			}}
+		/>
+	{/if}
+
+	{#if connectionErr}
+		<ConnectionErrorModal
+			errorType={connectionErr}
+			on:close={() => {
+				connectionErr = '';
 			}}
 		/>
 	{/if}
