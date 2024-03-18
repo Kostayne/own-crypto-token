@@ -3,57 +3,58 @@
 	import { goto } from '$app/navigation';
 
 	// types
-	import type { AccountPreviewData } from '@t/accountPreviewData.type';
-	import type { GlobalStateData } from '@stores/globalStore/globalStateData.type';
 	import type { EstablishConnectionErrT } from '@t/errors/establishConnectionError.type';
 
 	// cfg
 	import { tokenName, tokenSymbol } from '../cfg';
+
+	// widgets
+	import AccountSelect from './_widgets/AccountSelectWidget.svelte';
+	import CreateChildAccountModal from './_widgets/CreateChildAccountModalWidget.svelte';
+	import ManageAccountsModal from './_widgets/ManageAccountsModalWidget.svelte';
+	import EditAccountsModal from './_widgets/EditChildAccountModalWidget.svelte';
 
 	// components
 	import IconButton from '@c/buttons/IconButton.svelte';
 	import ConnectionErrorModal from '@c/modals/ConnectionErrorModal.svelte';
 	import UserActionsList from './_components/UserActionsList.svelte';
 	import AdminActionsList from './_components/AdminActionsList.svelte';
-	import AccountSelect from './_components/AccountSelect.svelte';
-	import CreateChildAccountModal from './_components/modals/CreateChildAccountModal.svelte';
-	import ManageAccountsModal from './_components/modals/ManageAccountsModal.svelte';
-	import EditAccountsModal from './_components/modals/EditChildAccountModal.svelte';
 
 	// icons
 	import GearIcon from '@icons/gear.svg?component';
 
-	// utils
-	import { generateAccountPreviews } from '@utils/generateAccountPreviews';
-
-	// ctx
-	import { getGlobalStore } from '@stores/globalStore/globalStore.selector';
-	import { ConnectionActions } from '@stores/globalStore/actions/connectionActions';
+	// store
+	import { getGlobalStore, ConnectionActions, ContractActions } from '@stores/globalStore';
 
 	// shared hooks
 	import { useAuth } from '@hooks/useAuth';
 
 	// store
 	const globalStore = getGlobalStore();
-	globalStore.subscribe(() => {});
 
 	const connActions = new ConnectionActions(globalStore);
+	const contractActions = new ContractActions(globalStore);
 
-	// aliases
+	// store.aliases
 	const contract = $globalStore?.walletState?.contract;
-	const selectedWallet = $globalStore?.walletState?.selectedWallet;
 
 	// state
 	let isShowingAccountManagement = false;
 	let isShowingCreateAccount = false;
 	let isShowingEditAccount = false;
 
+	let fetchedBalance = false;
 	let connectionErr: EstablishConnectionErrT | '' = '';
 
 	// address of account to edit in editAccountModal
 	let editingAccAddress = '';
 
-	let selectedAccBalance = 0;
+	let selectedAccBalance = BigInt(0);
+
+	// event handlers
+	const onChangeAcc = async () => {
+		selectedAccBalance = await contractActions.getBalance();
+	};
 
 	// hooks
 	useAuth('loggedIn');
@@ -64,32 +65,29 @@
 		}
 
 		if (!contract) {
+			// establish connection to get a contract instance
 			const res = await connActions.establishConnection();
 
 			if (res.isError) {
+				// failed to connect, do nothing
 				connectionErr = res.unwrapErr();
+				return;
 			}
+
+			return;
 		}
+
+		// fetching balance
+		selectedAccBalance = await contractActions.getBalance();
 	});
 
-	// helpers
-	const getAccountPreviews = (globalState: GlobalStateData): AccountPreviewData[] => {
-		if (!globalState) {
-			return [];
+	globalStore.subscribe(async (newData) => {
+		// fetch balance if needed
+		if (newData?.walletState?.contract && fetchedBalance) {
+			selectedAccBalance = await contractActions.getBalance();
+			fetchedBalance = true;
 		}
-
-		return [
-			{
-				address: globalState.walletState.mainWallet.address,
-				name: 'Main account',
-			},
-
-			...generateAccountPreviews(globalState.walletState.accounts),
-		] as AccountPreviewData[];
-	};
-
-	// computed
-	$: accountPreviews = getAccountPreviews($globalStore);
+	});
 </script>
 
 <svelte:head>
@@ -118,8 +116,7 @@
 
 	<AccountSelect
 		className="mt-1"
-		previewsData={accountPreviews}
-		selectedAddress={selectedWallet?.address}
+		on:change={onChangeAcc}
 		on:clickManage={() => {
 			isShowingAccountManagement = true;
 		}}

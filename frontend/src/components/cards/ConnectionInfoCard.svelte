@@ -35,7 +35,7 @@
 		<div class={'w-full'}>
 			<span class="text-primary font-medium">Connection settings</span>
 
-			<ConnectionInfoForm className="mt-4" hideCancelButton />
+			<ConnectionInfoForm className="mt-4" hideCancelButton on:connectionSuccess on:connectionErr />
 		</div>
 	{/if}
 </Card>

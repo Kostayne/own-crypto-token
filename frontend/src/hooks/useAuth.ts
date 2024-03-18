@@ -2,10 +2,9 @@ import { onMount } from 'svelte';
 import { get } from 'svelte/store';
 import { goto } from '$app/navigation';
 
-// ctx
-import { getGlobalStore } from '@stores/globalStore/globalStore.selector';
-import { AuthActions } from '@stores/globalStore/actions/authActions';
-import { getInitStore } from '@stores/initStore/initStore.selector';
+// store
+import { getGlobalStore, AuthActions } from '@stores/globalStore';
+import { getInitStore } from '@stores/initStore';
 
 // utils
 import { loadEncryptedDataRaw } from '@utils/encryptedDataStore';

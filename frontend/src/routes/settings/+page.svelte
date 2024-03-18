@@ -7,8 +7,7 @@
 	import ConnectionInfoCard from '@c/cards/ConnectionInfoCard.svelte';
 
 	// stores
-	import { getGlobalStore } from '@stores/globalStore/globalStore.selector';
-	import { AuthActions } from '@stores/globalStore/actions/authActions';
+	import { getGlobalStore, AuthActions } from '@stores/globalStore';
 
 	// icons
 	import RmSvg from '@icons/rm.svg?component';

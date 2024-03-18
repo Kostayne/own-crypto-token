@@ -2,14 +2,15 @@
 	import { gs } from 'get-module-style';
 	import { createEventDispatcher } from 'svelte';
 	import Select from 'svelte-select';
+	import toast from 'svelte-french-toast';
 
 	// c
 	import Input from '@c/Input.svelte';
 	import Button from '@c/buttons/Button.svelte';
+	import ConnectionErrorModal from '@c/modals/ConnectionErrorModal.svelte';
 
 	// store
-	import { getGlobalStore } from '@stores/globalStore/globalStore.selector';
-	import { ConnectionActions } from '@stores/globalStore/actions/connectionActions';
+	import { getGlobalStore, ConnectionActions } from '@stores/globalStore';
 
 	// types
 	import type { EstablishConnectionErrT } from '@t/errors/establishConnectionError.type';
@@ -19,7 +20,6 @@
 
 	// validators
 	import { validateRequiredStr } from '@validators/requiredStrValidator';
-	import ConnectionErrorModal from '@c/modals/ConnectionErrorModal.svelte';
 
 	// props
 	export let className = '';
@@ -159,6 +159,11 @@
 
 	// events handlers
 	const onSaveClick = async () => {
+		if (!$globalStore.password || !$globalStore.encrypted) {
+			toast.error('Failed to load password!', { position: 'top-center' });
+			return;
+		}
+
 		actions.setConnectionData(getConnectionData());
 		const connRes = await actions.establishConnection();
 

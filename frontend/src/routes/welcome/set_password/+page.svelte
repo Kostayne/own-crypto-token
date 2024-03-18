@@ -9,10 +9,9 @@
 	// validators
 	import { validatePassword, validatePasswordConfirm } from '@validators/passwordValidator';
 
-	// ctx
-	import { getInitStore } from '@stores/initStore/initStore.selector';
-	import { getGlobalStore } from '@stores/globalStore/globalStore.selector';
-	import { AuthActions } from '@stores/globalStore/actions/authActions';
+	// store
+	import { getInitStore } from '@stores/initStore';
+	import { getGlobalStore, AuthActions } from '@stores/globalStore';
 
 	// hooks
 	import { useAuth } from '@hooks/useAuth';

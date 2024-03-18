@@ -4,15 +4,15 @@
 	// c
 	import Modal from '@c/Modal.svelte';
 	import Button from '@c/buttons/Button.svelte';
-	import CreateAccountButton from '../buttons/CreateAccountButton.svelte';
-	import AccountPreview from '../AccountPreview.svelte';
+
+	import CreateAccountButton from '../_components/buttons/CreateAccountButton.svelte';
+	import AccountPreview from '../_components/AccountPreview.svelte';
 
 	// utils
 	import { generateAccountPreviews } from '@utils/generateAccountPreviews';
 
-	// ctx
-	import { getGlobalStore } from '@stores/globalStore/globalStore.selector';
-	import { AccountActions } from '@stores/globalStore/actions/accountActions';
+	// store
+	import { getGlobalStore, AccountActions } from '@stores/globalStore';
 
 	// global state
 	const globalStore = getGlobalStore();

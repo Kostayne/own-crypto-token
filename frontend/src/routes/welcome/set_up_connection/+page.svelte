@@ -7,9 +7,6 @@
 	// hooks
 	import { useAuth } from '@hooks/useAuth';
 
-	// types
-	import { type EstablishConnectionErrT } from '@t/errors/establishConnectionError.type';
-
 	// using hooks
 	useAuth('loggedIn', '/welcome/set_up_connection');
 </script>

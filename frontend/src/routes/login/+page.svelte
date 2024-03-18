@@ -11,8 +11,7 @@
 	import { validatePassword } from '@validators/passwordValidator';
 
 	// stores
-	import { getGlobalStore } from '@stores/globalStore/globalStore.selector';
-	import { AuthActions } from '@stores/globalStore/actions/authActions';
+	import { getGlobalStore, AuthActions } from '@stores/globalStore';
 
 	// hooks
 	import { useAuth } from '@hooks/useAuth';

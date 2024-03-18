@@ -8,9 +8,9 @@ import toast from "svelte-french-toast";
 import { GlobalStoreActions } from "../globalStoreActions";
 
 // utils
-import { deleteEncryptedData, loadEncryptedData, loadEncryptedDataRaw, saveEncryptedData } from "@utils/encryptedDataStore";
-import { generateHDAccountsFromData } from "@utils/generateHDAccountsFromGenData";
 import { savePassword } from "@utils/userPasswordStore";
+import { generateHDAccountsFromData } from "@utils/generateHDAccountsFromGenData";
+import { deleteEncryptedData, loadEncryptedData, loadEncryptedDataRaw, saveEncryptedData } from "@utils/encryptedDataStore";
 
 // types
 import type { GlobalStateData } from "../globalStateData.type";
@@ -99,7 +99,7 @@ export class AuthActions extends GlobalStoreActions {
 		}
 
 		const wallet = walletRes.unwrap();
-		const globalState = { ...get(this.store) };
+		const globalState = { ...get(this.store), password };
 
 		// setting wallet state
 		globalState.walletState = {

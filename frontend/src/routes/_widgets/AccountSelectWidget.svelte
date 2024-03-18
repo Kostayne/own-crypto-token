@@ -1,21 +1,33 @@
 <script lang="ts">
 	import { gs } from 'get-module-style';
 	import { createEventDispatcher, onMount } from 'svelte';
+	import toast from 'svelte-french-toast';
+
+	// store
+	import { ConnectionActions, getGlobalStore } from '@stores/globalStore';
 
 	// types
 	import type { AccountPreviewData } from '@t/accountPreviewData.type';
+	import type { GlobalStateData } from '@stores/globalStore/globalStateData.type';
 
 	// c
-	import AccountPreview from './AccountPreview.svelte';
+	import TextButton from '@c/buttons/TextButton.svelte';
+	import AccountPreview from '../_components/AccountPreview.svelte';
 
 	// svgs
 	import ChevronSvg from '@icons/chevron.svg?component';
-	import TextButton from '@c/buttons/TextButton.svelte';
+
+	// utils
+	import { generateAccountPreviews } from '@utils/generateAccountPreviews';
+
+	// store
+	const globalStore = getGlobalStore();
+	const connActions = new ConnectionActions(globalStore);
+
+	globalStore.subscribe(() => {});
 
 	// props
 	export let className = '';
-	export let previewsData: AccountPreviewData[] = [];
-	export let selectedAddress: string = previewsData[0]?.address || '';
 
 	// state
 	const dispatch = createEventDispatcher();
@@ -23,15 +35,56 @@
 	let containerRef: HTMLButtonElement;
 	let isOpened = false;
 
+	// utils
+	// need global state for proper reactivity
+	const getAccountPreviews = (globalState: GlobalStateData): AccountPreviewData[] => {
+		if (!globalState) {
+			return [];
+		}
+
+		return [
+			{
+				address: $globalStore.walletState.mainWallet.address,
+				name: 'Main account',
+			},
+
+			...generateAccountPreviews($globalStore.walletState.accounts),
+		] as AccountPreviewData[];
+	};
+
+	$: previewsData = getAccountPreviews($globalStore);
+	$: selectedAddress = $globalStore?.walletState?.selectedWallet?.address;
 	$: selectedAccount = previewsData.find((a) => a.address === selectedAddress) || previewsData[0];
 	$: notSelectedAccounts = previewsData.filter((a) => a.address !== selectedAddress);
 
 	// event handlers
-	function onItemSelect(address: string) {
-		selectedAddress = address;
-		dispatch('change', selectedAddress);
+	async function onItemSelect(address: string) {
+		// getting new wallet by address
+		const getNewWallet = () => {
+			if (address === $globalStore.walletState.mainWallet.address) {
+				return $globalStore.walletState.mainWallet;
+			}
+
+			return $globalStore.walletState.accounts.find((a) => a.wallet.address === address)?.wallet;
+		};
+
+		const newWallet = getNewWallet();
+
+		if (!newWallet) {
+			toast.error('Failed to find selected account!');
+			return;
+		}
+
+		// setting selected wallet in global store
+		$globalStore.walletState.selectedWallet = newWallet;
+
+		// create a new connection that uses new wallet
+		await connActions.establishConnection();
+
+		dispatch('change', newWallet.address);
 	}
 
+	// hooks
 	onMount(() => {
 		function onClickOnDocument(e: MouseEvent) {
 			if (!e.target) {
@@ -55,10 +108,10 @@
 </script>
 
 <button
-	on:click={() => (isOpened = !isOpened)}
-	bind:this={containerRef}
 	role="listbox"
 	tabindex="0"
+	on:click={() => (isOpened = !isOpened)}
+	bind:this={containerRef}
 	class={gs(className, 'flex flex-col cursor-pointer')}
 >
 	<!-- horizontal -->

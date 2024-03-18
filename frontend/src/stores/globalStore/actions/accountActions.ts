@@ -2,6 +2,8 @@ import { get } from "svelte/store";
 
 // types
 import type { HDAccount } from "@t/hdAccount.type";
+
+// actions
 import { GlobalStoreActions } from "../globalStoreActions";
 
 // utils

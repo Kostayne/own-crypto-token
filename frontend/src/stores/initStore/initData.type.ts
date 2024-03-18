@@ -1,4 +1,7 @@
+import type { ConnectionData } from "@t/connectionData.type";
+
 export interface InitData {
-    seedPhrase?: string;
     password?: string;
+    seedPhrase?: string;
+    connectionSettings?: ConnectionData;
 }

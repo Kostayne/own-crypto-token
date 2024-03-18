@@ -1,5 +1,5 @@
 import { get } from "svelte/store";
-import { Err, Ok, toResult, type Result, toResultAsync, type AsyncResult } from "base-ts-result";
+import { Err, Ok, toResult, type Result, type AsyncResult } from "base-ts-result";
 import toast from "svelte-french-toast";
 
 import { 
@@ -15,6 +15,7 @@ import {
 // types
 import type { ConnectionData } from "@t/connectionData.type";
 import type { EstablishConnectionErrT } from "@t/errors/establishConnectionError.type";
+import type { AppContract } from "@t/appContract.type";
 
 // actions
 import { GlobalStoreActions } from "../globalStoreActions"
@@ -37,6 +38,7 @@ export class ConnectionActions extends GlobalStoreActions {
 
         const saveRes = toResult(() => saveEncryptedData(globalState.encrypted, globalState.password)); {
             if (saveRes.isError) {
+                console.error(saveRes.unwrapErr());
                 toast.error('Failed to save connection settings!');
             }
         }
@@ -93,9 +95,13 @@ export class ConnectionActions extends GlobalStoreActions {
         return Err('INVALID_TYPE');
     }
 
+    /**
+     * @description creates a connection from the selected wallet to a contract instance
+     */
     public async establishConnection(): AsyncResult<void, EstablishConnectionErrT> {
         const globalState = {...get(this.store)};
         const connData = globalState.encrypted.connectionData;
+        const selectedWallet = globalState.walletState.selectedWallet;
 
         // getting an ethereum blockchain provider
         const providerRes = this.getProvider(connData); {
@@ -105,34 +111,31 @@ export class ConnectionActions extends GlobalStoreActions {
             }
         }
 
-        // applying current address to the provider
-        const signerRes = await toResultAsync(() => providerRes.unwrap().getSigner()); {
-            if (signerRes.isError) {
-                console.error(signerRes.unwrapErr());
-                return Err('SIGNER_ERR');
+        // connecting select wallet to a provider
+        const connectWalletRes = toResult(() => selectedWallet.connect(providerRes.unwrap())); {
+            if (connectWalletRes.isError) {
+                console.error(connectWalletRes.unwrapErr());
+                return Err('PROVIDER_ERR');
             }
         }
 
         // getting a contract instance
-        const contractRes = toResult(() => new Contract(contractAddress, contractAbi, signerRes.unwrap())); {
+        const contractRes = toResult(() => 
+            new Contract(contractAddress, contractAbi, connectWalletRes.unwrap())
+        ); {
             if (contractRes.isError) {
                 console.error(contractRes.unwrapErr());
                 return Err('CONTRACT_ERR');
             }
         };
 
-        const accSignerRes = toResult(() => contractRes.unwrap()
-            .connect(globalState.walletState.selectedWallet)
-        ); {
-            if (accSignerRes.isError) {
-                console.error(accSignerRes.unwrapErr());
-                return Err('SIGNER_ERR');
-            }
-        }
-
         // successfully created a contract instance to interact with
         // blockchain from selected address
-        globalState.walletState.contract = accSignerRes.unwrap();
+        globalState.walletState.contract = contractRes.unwrap() as unknown as AppContract;
+
+        // update the store
+        this.store.set(globalState);
+
         return Ok(undefined);
     }
 }
