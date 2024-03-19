@@ -1,0 +1,57 @@
+<script lang="ts">
+	import { isAddress } from 'ethers';
+	import { createEventDispatcher } from 'svelte';
+
+	// c
+	import Input from '@c/Input.svelte';
+	import Modal from '@c/Modal.svelte';
+	import Button from '@c/buttons/Button.svelte';
+
+	// cfg
+	import { tokenSymbol } from '@src/cfg';
+
+	// stores
+	import { ContractActions, getGlobalStore } from '@stores/globalStore';
+
+	// state
+	let address = '';
+	let balance: BigInt | undefined = undefined;
+
+	// store
+	const globalStore = getGlobalStore();
+	const contractActions = new ContractActions(globalStore);
+
+	// events
+	const dispatch = createEventDispatcher();
+
+	// event handlers
+	const onGetBalanceClick = async () => {
+		balance = await contractActions.balanceOf(address);
+	};
+
+	// computed
+	$: addressErr = isAddress(address) ? '' : 'Invalid address';
+</script>
+
+<Modal title="Balance of" on:close>
+	<Input error={addressErr} label="Address" bind:value={address} />
+
+	{#if balance}
+		<span class="block mt-2 font-semibold text-primary text-[23px]">
+			{balance}
+			{tokenSymbol}
+		</span>
+	{/if}
+
+	<div class="mt-4 flex justify-stretch gap-3">
+		<Button
+			className="w-full text-nowrap"
+			disabled={Boolean(addressErr)}
+			on:click={onGetBalanceClick}
+		>
+			Get balance
+		</Button>
+
+		<Button className="w-full" type="secondary" on:click={() => dispatch('close')}>Close</Button>
+	</div>
+</Modal>

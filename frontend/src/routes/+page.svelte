@@ -17,7 +17,7 @@
 	// components
 	import IconButton from '@c/buttons/IconButton.svelte';
 	import ConnectionErrorModal from '@c/modals/ConnectionErrorModal.svelte';
-	import UserActionsList from './_components/UserActionsList.svelte';
+	import UserActionsList from './_widgets/UserActionsListWidget.svelte';
 	import AdminActionsList from './_components/AdminActionsList.svelte';
 
 	// icons
@@ -49,6 +49,7 @@
 	// address of account to edit in editAccountModal
 	let editingAccAddress = '';
 
+	// displays under account selector
 	let selectedAccBalance = BigInt(0);
 
 	// event handlers
@@ -122,6 +123,7 @@
 		}}
 	/>
 
+	<!-- Modals -->
 	{#if isShowingAccountManagement}
 		<ManageAccountsModal
 			on:close={() => {

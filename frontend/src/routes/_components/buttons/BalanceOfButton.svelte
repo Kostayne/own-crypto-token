@@ -3,6 +3,6 @@
 	import BalanceOfSvg from '@icons/balance.svg?component';
 </script>
 
-<IconButton name="Balance of">
+<IconButton on:click name="Balance of">
 	<BalanceOfSvg />
 </IconButton>

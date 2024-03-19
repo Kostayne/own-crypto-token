@@ -25,7 +25,7 @@
 	on:click|self={() => dispatch('close')}
 >
 	<!-- form -->
-	<Card className={gs('max-w-[500px] h-fit', formClassName)}>
+	<Card className={gs('max-w-[280px] h-fit', formClassName)}>
 		<span
 			class={gs(
 				{
