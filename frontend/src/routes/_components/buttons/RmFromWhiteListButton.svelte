@@ -3,6 +3,6 @@
 	import RmFromWhiteListSvg from '@icons/rm-from-white-list.svg?component';
 </script>
 
-<IconButton name="Rm from white list">
+<IconButton name="Rm from white list" on:click>
 	<RmFromWhiteListSvg />
 </IconButton>

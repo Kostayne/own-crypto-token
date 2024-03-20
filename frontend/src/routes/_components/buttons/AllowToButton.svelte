@@ -3,6 +3,6 @@
 	import AllowToSvg from '@icons/allow-to.svg?component';
 </script>
 
-<IconButton name="Allow to">
+<IconButton name="Allow to" on:click>
 	<AllowToSvg />
 </IconButton>

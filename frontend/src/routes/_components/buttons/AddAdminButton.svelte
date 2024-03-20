@@ -3,6 +3,6 @@
 	import AddAdminSvg from '@icons/add-admin.svg?component';
 </script>
 
-<IconButton name="Add admin">
+<IconButton name="Add admin" on:click>
 	<AddAdminSvg />
 </IconButton>

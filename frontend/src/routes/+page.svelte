@@ -10,9 +10,9 @@
 
 	// widgets
 	import AccountSelect from './_widgets/AccountSelectWidget.svelte';
-	import CreateChildAccountModal from './_widgets/CreateChildAccountModalWidget.svelte';
-	import ManageAccountsModal from './_widgets/ManageAccountsModalWidget.svelte';
-	import EditAccountsModal from './_widgets/EditChildAccountModalWidget.svelte';
+	import CreateChildAccountModal from './_widgets/modals/CreateChildAccountModalWidget.svelte';
+	import ManageAccountsModal from './_widgets/modals/ManageAccountsModalWidget.svelte';
+	import EditAccountsModal from './_widgets/modals/EditChildAccountModalWidget.svelte';
 
 	// components
 	import IconButton from '@c/buttons/IconButton.svelte';

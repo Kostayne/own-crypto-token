@@ -3,6 +3,6 @@
 	import TransferFromSvg from '@icons/transfer-from.svg?component';
 </script>
 
-<IconButton name="Transfer from">
+<IconButton name="Transfer from" on:click>
 	<TransferFromSvg />
 </IconButton>

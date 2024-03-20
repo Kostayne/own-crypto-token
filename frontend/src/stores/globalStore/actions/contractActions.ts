@@ -1,5 +1,5 @@
 import { get } from "svelte/store";
-import { toResultAsync } from "base-ts-result";
+import { toResultAsync, type AsyncResult } from "base-ts-result";
 import type { AddressLike } from "ethers";
 import toast from "svelte-french-toast";
 
@@ -8,6 +8,7 @@ import { GlobalStoreActions } from "../globalStoreActions";
 
 // types
 import type { AppContract } from "@t/appContract.type";
+import type { EthersError } from "ethers";
 
 export class ContractActions extends GlobalStoreActions {
     /**
@@ -47,5 +48,12 @@ export class ContractActions extends GlobalStoreActions {
         const selectedWallet = globalState.walletState.selectedWallet;
 
         return this.balanceOf(selectedWallet.address);
+    }
+
+    async transferTo(addr: AddressLike, val: number): AsyncResult<unknown, EthersError> {
+        const globalState = get(this.store);
+        const contract = globalState.walletState.contract as AppContract;
+
+        return toResultAsync(contract.transfer(addr, val));
     }
 }

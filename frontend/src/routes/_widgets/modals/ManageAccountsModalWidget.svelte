@@ -5,8 +5,8 @@
 	import Modal from '@c/Modal.svelte';
 	import Button from '@c/buttons/Button.svelte';
 
-	import CreateAccountButton from '../_components/buttons/CreateAccountButton.svelte';
-	import AccountPreview from '../_components/AccountPreview.svelte';
+	import CreateAccountButton from '../../_components/buttons/CreateAccountButton.svelte';
+	import AccountPreview from '../../_components/AccountPreview.svelte';
 
 	// utils
 	import { generateAccountPreviews } from '@utils/generateAccountPreviews';

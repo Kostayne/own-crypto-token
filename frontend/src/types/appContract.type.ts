@@ -1,4 +1,5 @@
 import type { AddressLike } from "ethers";
+import type { TransactionResponse } from "ethers";
 import type { BaseContract } from "ethers";
 import type { BaseContractMethod } from "ethers";
 import type { ContractTransactionResponse } from "ethers";
@@ -23,7 +24,7 @@ export type AppContract = BaseContract & {
     pause: BaseContractMethod;
     unpause: BaseContractMethod;
 
-    transfer: BaseContractMethod<[AddressLike, number]>;
+    transfer: BaseContractMethod<[AddressLike, number], TransactionResponse>;
     transferFrom: BaseContractMethod<[AddressLike, AddressLike, number]>;
 
     transferOwnership: BaseContractMethod<[AddressLike]>;

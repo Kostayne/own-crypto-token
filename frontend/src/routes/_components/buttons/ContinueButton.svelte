@@ -3,6 +3,6 @@
 	import ContinueSvg from '@icons/continue.svg?component';
 </script>
 
-<IconButton name="Continue">
+<IconButton name="Continue" on:click>
 	<ContinueSvg />
 </IconButton>

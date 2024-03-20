@@ -3,6 +3,6 @@
 	import BurnSvg from '@icons/burn.svg?component';
 </script>
 
-<IconButton name="Burn">
+<IconButton name="Burn" on:click>
 	<BurnSvg />
 </IconButton>

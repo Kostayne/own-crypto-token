@@ -3,6 +3,6 @@
 	import AllowanceSvg from '@icons/allowance.svg?component';
 </script>
 
-<IconButton name="Allowance">
+<IconButton name="Allowance" on:click>
 	<AllowanceSvg />
 </IconButton>

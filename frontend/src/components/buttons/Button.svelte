@@ -3,7 +3,7 @@
 	import { gs } from 'get-module-style';
 	import { Clock } from 'svelte-loading-spinners';
 
-	type ButtonType = 'primary' | 'secondary' | 'warning' | 'error';
+	type ButtonType = 'primary' | 'secondary' | 'alternative' | 'warning' | 'error';
 
 	export let type: ButtonType = 'primary';
 	export let className = '';
@@ -46,6 +46,7 @@
 		'relative max-w-[280px]',
 
 		{
+			'bg-blue': type === 'alternative',
 			'bg-primary disabled:bg-primary-dark': type === 'primary',
 			'bg-primary-dark': type === 'secondary',
 			'bg-btn-warning': type === 'warning',

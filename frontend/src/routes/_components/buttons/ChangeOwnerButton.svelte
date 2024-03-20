@@ -3,6 +3,6 @@
 	import ChangeOwnerSvg from '@icons/change-owner.svg?component';
 </script>
 
-<IconButton name="Change owner">
+<IconButton name="Change owner" on:click>
 	<ChangeOwnerSvg />
 </IconButton>
