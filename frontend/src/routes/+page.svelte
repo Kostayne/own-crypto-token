@@ -19,6 +19,7 @@
 	import ConnectionErrorModal from '@c/modals/ConnectionErrorModal.svelte';
 	import UserActionsList from './_widgets/UserActionsListWidget.svelte';
 	import AdminActionsList from './_components/AdminActionsList.svelte';
+	import AccountBalance from './_components/AccountBalance.svelte';
 
 	// icons
 	import GearIcon from '@icons/gear.svg?component';
@@ -28,6 +29,7 @@
 
 	// shared hooks
 	import { useAuth } from '@hooks/useAuth';
+	import CopyAddressButton from './_components/buttons/CopyAddressButton.svelte';
 
 	// store
 	const globalStore = getGlobalStore();
@@ -109,11 +111,7 @@
 	<span class="font-medium">{tokenName}</span>
 	<span class="font-medium text-[0.8rem]">Total supply: 500KST</span>
 
-	<span class="mt-6 text-[23px] font-semibold text-primary">
-		{selectedAccBalance}
-
-		{tokenSymbol}
-	</span>
+	<AccountBalance className="mt-6" balance={selectedAccBalance} />
 
 	<AccountSelect
 		className="mt-1"
@@ -122,6 +120,8 @@
 			isShowingAccountManagement = true;
 		}}
 	/>
+
+	<CopyAddressButton className="mt-2" address={$globalStore?.walletState?.selectedWallet.address} />
 
 	<!-- Modals -->
 	{#if isShowingAccountManagement}

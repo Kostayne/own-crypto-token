@@ -21,27 +21,44 @@
 
 	// state
 	let value = '';
-	let address = '';
+	let fromAddress = '';
+	let toAddress = '';
 
 	const dispatch = createEventDispatcher();
 
+	// validators
+	const validateToAddress = (from: string, to: string): string => {
+		if (!isAddress(to)) {
+			return 'Invalid address';
+		}
+
+		if (from === to) {
+			return 'Addresses should not match';
+		}
+
+		return '';
+	};
+
 	// computed
 	$: valueErr = validateTransferValue(value);
-	$: addressErr = isAddress(address) ? '' : 'Invalid address';
+	$: fromAddressErr = isAddress(fromAddress) ? '' : 'Invalid address';
+	$: toAddressErr = validateToAddress(fromAddress, toAddress);
 
 	// event handlers
 	const onTransferClick = async () => {
 		const val = parseInt(value);
-		const balance = await contractActions.getBalance();
+
+		// TODO fetch allowance here
+		const allowance = BigInt(0);
 
 		// prevent transferring insufficient balance
-		if (BigInt(val) < balance || balance === BigInt(0)) {
+		if (BigInt(val) < allowance || allowance === BigInt(0)) {
 			toast.error('Not enough balance', { position: 'top-center' });
 			valueErr = 'Too much';
 			return;
 		}
 
-		const res = await contractActions.transferTo(address, val);
+		const res = await contractActions.transferTo(fromAddress, val);
 
 		if (res.isError) {
 			console.error(res.unwrapErr());
@@ -52,19 +69,35 @@
 	};
 
 	const onMaxClick = async () => {
-		const balance = await contractActions.getBalance();
-		value = balance.toString();
+		if (fromAddressErr) {
+			toast.error('Type valid from address', { position: 'top-center', duration: 2500 });
+			return;
+		}
+
+		const allowanceRes = await contractActions.allowance(fromAddress);
+
+		if (allowanceRes.isError) {
+			console.error(allowanceRes.unwrapErr());
+			toast.error(allowanceRes.unwrapErr().shortMessage);
+			return;
+		}
+
+		value = allowanceRes.unwrap().toString();
 	};
 </script>
 
-<Modal title="Transfer to" on:close>
-	<Input label="To address" bind:value={address} error={addressErr} />
+<Modal title="Transfer from" on:close>
+	<Input label="From address" bind:value={fromAddress} error={fromAddressErr} />
+	<Input label="To address" className="mt-2" bind:value={toAddress} error={toAddressErr} />
 	<Input label="Value" className="mt-2" bind:value error={valueErr} />
 
 	<MaxValueButton className="mt-2" on:click={onMaxClick} />
 
 	<div class="flex gap-3 mt-4">
-		<Button disabled={!!valueErr || !!addressErr} on:click={onTransferClick}>TRANSFER</Button>
+		<Button disabled={!!valueErr || !!fromAddressErr || !!toAddressErr} on:click={onTransferClick}>
+			TRANSFER
+		</Button>
+
 		<Button type="secondary" on:click={() => dispatch('close')}>CANCEL</Button>
 	</div>
 </Modal>

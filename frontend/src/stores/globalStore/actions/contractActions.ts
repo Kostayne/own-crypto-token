@@ -50,10 +50,34 @@ export class ContractActions extends GlobalStoreActions {
         return this.balanceOf(selectedWallet.address);
     }
 
+    /**
+     * @param addr 
+     * @param val tokens count to transfer
+     */
     async transferTo(addr: AddressLike, val: number): AsyncResult<unknown, EthersError> {
         const globalState = get(this.store);
         const contract = globalState.walletState.contract as AppContract;
 
         return toResultAsync(contract.transfer(addr, val));
+    }
+
+    /**
+     * @param fromAddr 
+     * @param toAddr 
+     * @param val tokens count to transfer
+     */
+    async transferFrom(fromAddr: AddressLike, toAddr: AddressLike, val: number): AsyncResult<unknown, EthersError> {
+        const globalState = get(this.store);
+        const contract = globalState.walletState.contract as AppContract;
+
+        return toResultAsync(contract.transferFrom(fromAddr, toAddr, val));
+    }
+
+    async allowance(ownerAddr: AddressLike): AsyncResult<bigint, EthersError> {
+        const globalState = get(this.store);
+        const contract = globalState.walletState.contract as AppContract;
+        const currAddress = globalState.walletState.selectedWallet.address;
+
+        return toResultAsync(contract.allowance(ownerAddr, currAddress));
     }
 }

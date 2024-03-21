@@ -7,15 +7,14 @@
 	import Modal from '@c/Modal.svelte';
 	import Button from '@c/buttons/Button.svelte';
 
-	// cfg
-	import { tokenSymbol } from '@src/cfg';
+	import AccountBalance from '../../_components/AccountBalance.svelte';
 
 	// stores
 	import { ContractActions, getGlobalStore } from '@stores/globalStore';
 
 	// state
 	let address = '';
-	let balance: BigInt | undefined = undefined;
+	let balance = BigInt(0);
 
 	// store
 	const globalStore = getGlobalStore();
@@ -37,10 +36,7 @@
 	<Input error={addressErr} label="Address" bind:value={address} />
 
 	{#if balance}
-		<span class="block mt-2 font-semibold text-primary text-[23px]">
-			{balance}
-			{tokenSymbol}
-		</span>
+		<AccountBalance className="mt-2" {balance} />
 	{/if}
 
 	<div class="mt-4 flex justify-stretch gap-3">

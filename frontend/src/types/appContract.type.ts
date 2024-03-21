@@ -13,21 +13,21 @@ export type AppContract = BaseContract & {
     balanceOf: BaseContractMethod<[AddressLike], bigint, bigint>;
 
     addAdmin: BaseContractMethod<[AddressLike], any, ContractTransactionResponse>;
-    removeAdmin: BaseContractMethod<[AddressLike]>;
+    removeAdmin: BaseContractMethod<[AddressLike], ContractTransactionResponse>;
     
-    addToWhiteList: BaseContractMethod<[AddressLike]>;
-    removeFromWhiteList: BaseContractMethod<[AddressLike]>;
+    addToWhiteList: BaseContractMethod<[AddressLike], ContractTransactionResponse>;
+    removeFromWhiteList: BaseContractMethod<[AddressLike], ContractTransactionResponse>;
 
-    mint: BaseContractMethod<[AddressLike, number]>;
-    burn: BaseContractMethod<[number]>;
+    mint: BaseContractMethod<[AddressLike, number], ContractTransactionResponse>;
+    burn: BaseContractMethod<[number], ContractTransactionResponse>;
 
-    pause: BaseContractMethod;
-    unpause: BaseContractMethod;
+    pause: BaseContractMethod<[], ContractTransactionResponse>;
+    unpause: BaseContractMethod<[], ContractTransactionResponse>;
 
     transfer: BaseContractMethod<[AddressLike, number], TransactionResponse>;
-    transferFrom: BaseContractMethod<[AddressLike, AddressLike, number]>;
+    transferFrom: BaseContractMethod<[AddressLike, AddressLike, number], TransactionResponse>;
 
-    transferOwnership: BaseContractMethod<[AddressLike]>;
+    transferOwnership: BaseContractMethod<[AddressLike], TransactionResponse>;
 
-    allowance: BaseContractMethod<[AddressLike, AddressLike]>;
+    allowance: BaseContractMethod<[AddressLike, AddressLike], bigint, bigint>;
 };
