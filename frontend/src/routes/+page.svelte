@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import toast from 'svelte-french-toast';
 
 	// types
 	import type { EstablishConnectionErrT } from '@t/errors/establishConnectionError.type';
@@ -21,6 +20,7 @@
 	import UserActionsList from './_widgets/UserActionsListWidget.svelte';
 	import AdminActionsList from './_components/AdminActionsList.svelte';
 	import AccountBalance from './_components/AccountBalance.svelte';
+	import CopyAddressButton from './_components/buttons/CopyAddressButton.svelte';
 
 	// icons
 	import GearIcon from '@icons/gear.svg?component';
@@ -30,7 +30,9 @@
 
 	// shared hooks
 	import { useAuth } from '@hooks/useAuth';
-	import CopyAddressButton from './_components/buttons/CopyAddressButton.svelte';
+
+	// utils
+	import { fetchBalanceOrShowErr } from '@utils/fetchBalance';
 
 	// store
 	const globalStore = getGlobalStore();
@@ -59,7 +61,9 @@
 
 	// event handlers
 	const onChangeAcc = async () => {
-		selectedAccBalance = await contractActions.getBalance();
+		// fetching new balance
+		selectedAccBalance = await fetchBalanceOrShowErr(contractActions);
+
 		const isAdminRes = await contractActions.isAdmin();
 		isAdmin = isAdminRes.unwrapOr(false);
 	};
@@ -83,8 +87,7 @@
 			}
 		}
 
-		// fetching balance
-		selectedAccBalance = await contractActions.getBalance();
+		selectedAccBalance = await fetchBalanceOrShowErr(contractActions);
 
 		// fetching is admin
 		const isAdminRes = await contractActions.isAdmin();
@@ -94,7 +97,7 @@
 	globalStore.subscribe(async (newData) => {
 		// fetch balance if needed
 		if (newData?.walletState?.contract && fetchedBalance) {
-			selectedAccBalance = await contractActions.getBalance();
+			selectedAccBalance = await fetchBalanceOrShowErr(contractActions);
 			fetchedBalance = true;
 
 			const isAdminRes = await contractActions.isAdmin();

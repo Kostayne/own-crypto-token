@@ -3,6 +3,6 @@
 	import EmitSvg from '@icons/emit.svg?component';
 </script>
 
-<IconButton name="Emit" on:click>
+<IconButton name="Mint" on:click>
 	<EmitSvg />
 </IconButton>

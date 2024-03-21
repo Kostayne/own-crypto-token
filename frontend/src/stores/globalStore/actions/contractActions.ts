@@ -1,7 +1,6 @@
 import { get } from "svelte/store";
-import { toResultAsync, type AsyncResult } from "base-ts-result";
+import { toResultAsync, type AsyncResult, Ok } from "base-ts-result";
 import type { AddressLike, EthersError } from "ethers";
-import toast from "svelte-french-toast";
 
 // actions
 import { GlobalStoreActions } from "../globalStoreActions";
@@ -10,42 +9,40 @@ import { GlobalStoreActions } from "../globalStoreActions";
 import type { AppContract } from "@t/appContract.type";
 
 export class ContractActions extends GlobalStoreActions {
+    private getContract(): AppContract {
+        const globalState = get(this.store);
+        return globalState?.walletState?.contract as AppContract;
+    }
+
+    private getSelectedWallet() {
+        const globalState = get(this.store);
+        return globalState.walletState.selectedWallet;
+    }
+
     /**
      * @description Get balance of the provided address
      * @param address Address string
      * @returns Bigint balance
      */
-    async balanceOf(address: AddressLike): Promise<bigint> {
-        const globalState = get(this.store);
+    async balanceOf(address: AddressLike): AsyncResult<bigint, EthersError> {
+        const contract = this.getContract();
 
-        if (!globalState?.walletState?.contract) {
+        if (!contract) {
             console.error('Tried to get balance without a contract instance');
-            return BigInt(0);
+            return Ok(BigInt(0));
         }
-        
-        const contract = globalState.walletState.contract as AppContract;
 
-        const res = await toResultAsync(() => 
+        return toResultAsync(() => 
             contract.balanceOf(address)
         );
-
-        if (res.isError) {
-            console.error(res.unwrapErr());
-            toast.error('Failed to get balance');
-            return BigInt(0);
-        }
-
-        return res.unwrap();
     }
 
     /**
      * @description Get balance of the current wallet
      * @returns Balance BigInt
      */
-    async getBalance(): Promise<bigint> {
-        const globalState = get(this.store);
-        const selectedWallet = globalState.walletState.selectedWallet;
-
+    async getBalance(): AsyncResult<bigint, EthersError> {
+        const selectedWallet = this.getSelectedWallet();
         return this.balanceOf(selectedWallet.address);
     }
 
@@ -54,9 +51,7 @@ export class ContractActions extends GlobalStoreActions {
      * @param val tokens count to transfer
      */
     async transferTo(addr: AddressLike, val: number): AsyncResult<unknown, EthersError> {
-        const globalState = get(this.store);
-        const contract = globalState.walletState.contract as AppContract;
-
+        const contract = this.getContract();
         return toResultAsync(contract.transfer(addr, val));
     }
 
@@ -66,9 +61,7 @@ export class ContractActions extends GlobalStoreActions {
      * @param val tokens count to transfer
      */
     async transferFrom(fromAddr: AddressLike, toAddr: AddressLike, val: number): AsyncResult<unknown, EthersError> {
-        const globalState = get(this.store);
-        const contract = globalState.walletState.contract as AppContract;
-
+        const contract = this.getContract();
         return toResultAsync(contract.transferFrom(fromAddr, toAddr, val));
     }
 
@@ -77,9 +70,8 @@ export class ContractActions extends GlobalStoreActions {
      * @description how much tokens you can spend from someone else's wallet
      */
     async allowance(ownerAddr: AddressLike): AsyncResult<bigint, EthersError> {
-        const globalState = get(this.store);
-        const contract = globalState.walletState.contract as AppContract;
-        const currAddress = globalState.walletState.selectedWallet.address;
+        const contract = this.getContract();
+        const currAddress = this.getSelectedWallet().address;
 
         return toResultAsync(contract.allowance(ownerAddr, currAddress));
     }
@@ -96,11 +88,67 @@ export class ContractActions extends GlobalStoreActions {
         return toResultAsync(contract.approve(addr, value));
     }
 
+    // admin actions
     async isAdmin(): AsyncResult<boolean, EthersError> {
-        const globalState = get(this.store);
-        const contract = globalState.walletState.contract as AppContract;
-        const addr = globalState.walletState.selectedWallet.address;
+        const contract = this.getContract();
+        const addr = this.getSelectedWallet().address;
 
         return toResultAsync(contract.isAdmin(addr));
+    }
+
+    /**
+     * @param addr 
+     * @param val 
+     * @description mints (adds) more tokens to the addr
+     */
+    async mint(addr: AddressLike, val: number): AsyncResult<unknown, EthersError> {
+        const contract = this.getContract();
+        return toResultAsync(contract.mint(addr, val));
+    }
+
+    /**
+     * @param val 
+     * @description removes tokens from the owner addr
+     */
+    async burn(val: number): AsyncResult<unknown, EthersError> {
+        const contract = this.getContract();
+        return toResultAsync(contract.burn(val));
+    }
+
+    async addAdmin(addr: AddressLike): AsyncResult<unknown, EthersError> {
+        const contract = this.getContract();
+        return toResultAsync(contract.addAdmin(addr));
+    }
+
+    async rmAdmin(addr: AddressLike): AsyncResult<unknown, EthersError> {
+        const contract = this.getContract();
+        return toResultAsync(contract.removeAdmin(addr));
+    }
+
+    /**
+     * @param addr 
+     * @description makes address able to receive / send tokens
+     */
+    async addToWhiteList(addr: AddressLike): AsyncResult<unknown, EthersError> {
+        const contract = this.getContract();
+        return toResultAsync(contract.addToWhiteList(addr));
+    }
+
+    /**
+     * @param addr 
+     * @description makes address not able to receive / send tokens
+     */
+    async rmFromWhiteList(addr: AddressLike): AsyncResult<unknown, EthersError> {
+        const contract = this.getContract();
+        return toResultAsync(contract.removeFromWhiteList(addr));
+    }
+
+    /**
+     * @param addr 
+     * @description transfers contract ownership
+     */
+    async changeOwner(addr: AddressLike): AsyncResult<unknown, EthersError> {
+        const contract = this.getContract();
+        return toResultAsync(contract.transferOwnership(addr));
     }
 }

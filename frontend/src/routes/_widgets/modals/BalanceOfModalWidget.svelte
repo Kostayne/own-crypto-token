@@ -11,6 +11,7 @@
 
 	// stores
 	import { ContractActions, getGlobalStore } from '@stores/globalStore';
+	import toast from 'svelte-french-toast';
 
 	// state
 	let address = '';
@@ -25,7 +26,17 @@
 
 	// event handlers
 	const onGetBalanceClick = async () => {
-		balance = await contractActions.balanceOf(address);
+		const resp = await contractActions.balanceOf(address);
+
+		if (resp.isError) {
+			toast.error(resp.unwrapErr().shortMessage, {
+				position: 'top-center',
+			});
+
+			console.error(resp.unwrapErr());
+		}
+
+		balance = resp.unwrap();
 	};
 
 	// computed

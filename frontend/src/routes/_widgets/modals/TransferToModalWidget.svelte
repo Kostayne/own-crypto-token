@@ -15,6 +15,9 @@
 	import { ContractActions, getGlobalStore } from '@stores/globalStore';
 	import MaxValueButton from '@src/routes/_components/buttons/MaxValueButton.svelte';
 
+	// utils
+	import { fetchBalanceOrShowErr } from '@utils/fetchBalance';
+
 	// store
 	const globalStore = getGlobalStore();
 	const contractActions = new ContractActions(globalStore);
@@ -32,7 +35,7 @@
 	// event handlers
 	const onTransferClick = async () => {
 		const val = parseInt(value);
-		const balance = await contractActions.getBalance();
+		const balance = await fetchBalanceOrShowErr(contractActions);
 
 		// prevent transferring insufficient balance
 		if (BigInt(val) < balance || balance === BigInt(0)) {
@@ -52,7 +55,7 @@
 	};
 
 	const onMaxClick = async () => {
-		const balance = await contractActions.getBalance();
+		const balance = await fetchBalanceOrShowErr(contractActions);
 		value = balance.toString();
 	};
 </script>
