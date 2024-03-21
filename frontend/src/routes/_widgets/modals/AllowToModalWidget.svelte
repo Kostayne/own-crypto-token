@@ -7,6 +7,7 @@
 	import Modal from '@c/Modal.svelte';
 	import Input from '@c/Input.svelte';
 	import Button from '@c/buttons/Button.svelte';
+
 	import MaxValueButton from '../../_components/buttons/MaxValueButton.svelte';
 
 	// validators

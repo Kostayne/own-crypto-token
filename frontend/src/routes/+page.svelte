@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import toast from 'svelte-french-toast';
 
 	// types
 	import type { EstablishConnectionErrT } from '@t/errors/establishConnectionError.type';
 
 	// cfg
-	import { tokenName, tokenSymbol } from '../cfg';
+	import { tokenName } from '../cfg';
 
 	// widgets
 	import AccountSelect from './_widgets/AccountSelectWidget.svelte';
@@ -41,6 +42,8 @@
 	const contract = $globalStore?.walletState?.contract;
 
 	// state
+	let isAdmin = false;
+
 	let isShowingAccountManagement = false;
 	let isShowingCreateAccount = false;
 	let isShowingEditAccount = false;
@@ -57,6 +60,8 @@
 	// event handlers
 	const onChangeAcc = async () => {
 		selectedAccBalance = await contractActions.getBalance();
+		const isAdminRes = await contractActions.isAdmin();
+		isAdmin = isAdminRes.unwrapOr(false);
 	};
 
 	// hooks
@@ -69,19 +74,21 @@
 
 		if (!contract) {
 			// establish connection to get a contract instance
-			const res = await connActions.establishConnection();
+			const connRes = await connActions.establishConnection();
 
-			if (res.isError) {
+			if (connRes.isError) {
 				// failed to connect, do nothing
-				connectionErr = res.unwrapErr();
+				connectionErr = connRes.unwrapErr();
 				return;
 			}
-
-			return;
 		}
 
 		// fetching balance
 		selectedAccBalance = await contractActions.getBalance();
+
+		// fetching is admin
+		const isAdminRes = await contractActions.isAdmin();
+		isAdmin = isAdminRes.unwrapOr(false);
 	});
 
 	globalStore.subscribe(async (newData) => {
@@ -89,6 +96,9 @@
 		if (newData?.walletState?.contract && fetchedBalance) {
 			selectedAccBalance = await contractActions.getBalance();
 			fetchedBalance = true;
+
+			const isAdminRes = await contractActions.isAdmin();
+			isAdmin = isAdminRes.unwrapOr(false);
 		}
 	});
 </script>
@@ -168,5 +178,8 @@
 	{/if}
 
 	<UserActionsList className="mt-6" />
-	<AdminActionsList className="mt-6" />
+
+	{#if isAdmin}
+		<AdminActionsList className="mt-6" />
+	{/if}
 </main>

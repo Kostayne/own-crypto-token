@@ -12,6 +12,7 @@ import type { ContractTransactionResponse } from "ethers";
 export type AppContract = BaseContract & {
     balanceOf: BaseContractMethod<[AddressLike], bigint, bigint>;
 
+    isAdmin: BaseContractMethod<[AddressLike], boolean, boolean>
     addAdmin: BaseContractMethod<[AddressLike], any, ContractTransactionResponse>;
     removeAdmin: BaseContractMethod<[AddressLike], ContractTransactionResponse>;
     

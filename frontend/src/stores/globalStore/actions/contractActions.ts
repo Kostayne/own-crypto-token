@@ -95,4 +95,12 @@ export class ContractActions extends GlobalStoreActions {
 
         return toResultAsync(contract.approve(addr, value));
     }
+
+    async isAdmin(): AsyncResult<boolean, EthersError> {
+        const globalState = get(this.store);
+        const contract = globalState.walletState.contract as AppContract;
+        const addr = globalState.walletState.selectedWallet.address;
+
+        return toResultAsync(contract.isAdmin(addr));
+    }
 }

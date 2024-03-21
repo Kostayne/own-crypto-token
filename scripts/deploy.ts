@@ -9,7 +9,7 @@ async function main() {
   const tokenName = 'Kostayne Token';
   const tokenSymbol = 'KST';
 
-  const token = await ethers.deployContract('MyToken', [tokenName, tokenSymbol, initAddress, initSum]);
+  const token = await ethers.deployContract('MyToken', [tokenName, tokenSymbol, initAddress, initSum], signers[0]);
   const tokenAddr = await token.getAddress();
 
   await token.waitForDeployment();
