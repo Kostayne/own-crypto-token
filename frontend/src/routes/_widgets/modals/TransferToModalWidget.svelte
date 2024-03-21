@@ -64,7 +64,10 @@
 	<MaxValueButton className="mt-2" on:click={onMaxClick} />
 
 	<div class="flex gap-3 mt-4">
-		<Button disabled={!!valueErr || !!addressErr} on:click={onTransferClick}>TRANSFER</Button>
+		<Button className="flex-grow" disabled={!!valueErr || !!addressErr} on:click={onTransferClick}>
+			TRANSFER
+		</Button>
+
 		<Button type="secondary" on:click={() => dispatch('close')}>CANCEL</Button>
 	</div>
 </Modal>

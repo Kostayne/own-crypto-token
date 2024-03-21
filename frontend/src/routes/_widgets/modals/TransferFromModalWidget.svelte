@@ -7,13 +7,13 @@
 	import Modal from '@c/Modal.svelte';
 	import Input from '@c/Input.svelte';
 	import Button from '@c/buttons/Button.svelte';
+	import MaxValueButton from '../../_components/buttons/MaxValueButton.svelte';
 
 	// validators
 	import { validateTransferValue } from '@validators/transferValueValidator';
 
 	// store
 	import { ContractActions, getGlobalStore } from '@stores/globalStore';
-	import MaxValueButton from '@src/routes/_components/buttons/MaxValueButton.svelte';
 
 	// store
 	const globalStore = getGlobalStore();
@@ -94,7 +94,11 @@
 	<MaxValueButton className="mt-2" on:click={onMaxClick} />
 
 	<div class="flex gap-3 mt-4">
-		<Button disabled={!!valueErr || !!fromAddressErr || !!toAddressErr} on:click={onTransferClick}>
+		<Button
+			className="flex-grow"
+			disabled={!!valueErr || !!fromAddressErr || !!toAddressErr}
+			on:click={onTransferClick}
+		>
 			TRANSFER
 		</Button>
 

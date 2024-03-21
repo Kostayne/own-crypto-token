@@ -30,4 +30,5 @@ export type AppContract = BaseContract & {
     transferOwnership: BaseContractMethod<[AddressLike], TransactionResponse>;
 
     allowance: BaseContractMethod<[AddressLike, AddressLike], bigint, bigint>;
+    approve: BaseContractMethod<[AddressLike, number], TransactionResponse>;
 };

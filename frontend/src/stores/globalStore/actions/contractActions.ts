@@ -1,6 +1,6 @@
 import { get } from "svelte/store";
 import { toResultAsync, type AsyncResult } from "base-ts-result";
-import type { AddressLike } from "ethers";
+import type { AddressLike, EthersError } from "ethers";
 import toast from "svelte-french-toast";
 
 // actions
@@ -8,7 +8,6 @@ import { GlobalStoreActions } from "../globalStoreActions";
 
 // types
 import type { AppContract } from "@t/appContract.type";
-import type { EthersError } from "ethers";
 
 export class ContractActions extends GlobalStoreActions {
     /**
@@ -73,11 +72,27 @@ export class ContractActions extends GlobalStoreActions {
         return toResultAsync(contract.transferFrom(fromAddr, toAddr, val));
     }
 
+    /**
+     * @param ownerAddr 
+     * @description how much tokens you can spend from someone else's wallet
+     */
     async allowance(ownerAddr: AddressLike): AsyncResult<bigint, EthersError> {
         const globalState = get(this.store);
         const contract = globalState.walletState.contract as AppContract;
         const currAddress = globalState.walletState.selectedWallet.address;
 
         return toResultAsync(contract.allowance(ownerAddr, currAddress));
+    }
+
+    /**
+     * @param addr 
+     * @param value 
+     * @description allows to spend your money to the other man
+     */
+    async allowTo(addr: AddressLike, value: number): AsyncResult<unknown, EthersError> {
+        const globalState = get(this.store);
+        const contract = globalState.walletState.contract as AppContract;
+
+        return toResultAsync(contract.approve(addr, value));
     }
 }

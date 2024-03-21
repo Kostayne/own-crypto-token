@@ -13,6 +13,7 @@
 	import TransferToModalWidget from './modals/TransferToModalWidget.svelte';
 	import AllowanceModalWidget from './modals/AllowanceModalWidget.svelte';
 	import TransferFromModalWidget from './modals/TransferFromModalWidget.svelte';
+	import AllowToModalWidget from './modals/AllowToModalWidget.svelte';
 
 	// props
 	export let className = '';
@@ -22,12 +23,13 @@
 	let isShowingTransferTo = false;
 	let isShowingTransferFrom = false;
 	let isShowingAllowance = false;
+	let isShowingApprove = false;
 </script>
 
 <div class={gs(className, 'max-w-[230px] mx-auto flex flex-wrap justify-center gap-x-3 gap-y-3')}>
 	<TransferButton on:click={() => (isShowingTransferTo = true)} />
 	<TransferFromButton on:click={() => (isShowingTransferFrom = true)} />
-	<AllowToButton />
+	<AllowToButton on:click={() => (isShowingApprove = true)} />
 	<AllowanceButton on:click={() => (isShowingAllowance = true)} />
 	<BalanceOfButton on:click={() => (isShowingBalanceOf = true)} />
 
@@ -45,5 +47,9 @@
 
 	{#if isShowingTransferFrom}
 		<TransferFromModalWidget on:close={() => (isShowingTransferFrom = false)} />
+	{/if}
+
+	{#if isShowingApprove}
+		<AllowToModalWidget on:close={() => (isShowingApprove = false)} />
 	{/if}
 </div>
