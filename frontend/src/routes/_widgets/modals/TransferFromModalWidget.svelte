@@ -7,6 +7,7 @@
 	import Modal from '@c/Modal.svelte';
 	import Input from '@c/Input.svelte';
 	import Button from '@c/buttons/Button.svelte';
+
 	import MaxValueButton from '../../_components/buttons/MaxValueButton.svelte';
 
 	// validators
@@ -14,6 +15,9 @@
 
 	// store
 	import { ContractActions, getGlobalStore } from '@stores/globalStore';
+
+	// cfg
+	import { tokenSymbol } from '@src/cfg';
 
 	// store
 	const globalStore = getGlobalStore();
@@ -52,7 +56,7 @@
 		const allowance = BigInt(0);
 
 		// prevent transferring insufficient balance
-		if (BigInt(val) < allowance || allowance === BigInt(0)) {
+		if (allowance < BigInt(val) || allowance === BigInt(0)) {
 			toast.error('Not enough balance', { position: 'top-center' });
 			valueErr = 'Too much';
 			return;
@@ -65,7 +69,12 @@
 			toast.error(res.unwrapErr().shortMessage, {
 				position: 'top-center',
 			});
+
+			return;
 		}
+
+		toast.success(`Transferred ${val} ${tokenSymbol}`);
+		dispatch('close');
 	};
 
 	const onMaxClick = async () => {

@@ -1,11 +1,9 @@
 <script lang="ts">
-	// c
-	import IconButton from '@c/buttons/IconButton.svelte';
+	import { gs } from 'get-module-style';
+	import toast from 'svelte-french-toast';
 
 	// icons
 	import CopyIcon from '@icons/copy.svg?component';
-	import { gs } from 'get-module-style';
-	import toast from 'svelte-french-toast';
 
 	// props
 	export let className = '';
@@ -14,7 +12,9 @@
 	// event handlers
 	const onClick = () => {
 		navigator.clipboard.writeText(address);
-		toast.success('Copied the address to clipboard');
+		toast.success('Copied the address to clipboard', {
+			position: 'top-right',
+		});
 	};
 </script>
 

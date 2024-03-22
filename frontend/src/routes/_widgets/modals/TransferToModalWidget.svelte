@@ -18,6 +18,9 @@
 	// utils
 	import { fetchBalanceOrShowErr } from '@utils/fetchBalance';
 
+	// cfg
+	import { tokenSymbol } from '@src/cfg';
+
 	// store
 	const globalStore = getGlobalStore();
 	const contractActions = new ContractActions(globalStore);
@@ -37,8 +40,10 @@
 		const val = parseInt(value);
 		const balance = await fetchBalanceOrShowErr(contractActions);
 
+		console.log(balance);
+
 		// prevent transferring insufficient balance
-		if (BigInt(val) < balance || balance === BigInt(0)) {
+		if (balance < BigInt(val) || balance === BigInt(0)) {
 			toast.error('Not enough balance', { position: 'top-center' });
 			valueErr = 'Too much';
 			return;
@@ -51,7 +56,12 @@
 			toast.error(res.unwrapErr().shortMessage, {
 				position: 'top-center',
 			});
+
+			return;
 		}
+
+		toast.success(`Transferred ${val} ${tokenSymbol}`);
+		dispatch('close');
 	};
 
 	const onMaxClick = async () => {

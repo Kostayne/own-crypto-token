@@ -151,4 +151,20 @@ export class ContractActions extends GlobalStoreActions {
         const contract = this.getContract();
         return toResultAsync(contract.transferOwnership(addr));
     }
+
+    /**
+     * @description stop all transactions
+     */
+    async pause(): AsyncResult<unknown, EthersError> {
+        const contract = this.getContract();
+        return toResultAsync(contract.pause());
+    }
+
+    /**
+     * @description continue all transactions
+     */
+    async unpause(): AsyncResult<unknown, EthersError> {
+        const contract = this.getContract();
+        return toResultAsync(contract.unpause());
+    }
 }

@@ -8,8 +8,6 @@
 	import Input from '@c/Input.svelte';
 	import Button from '@c/buttons/Button.svelte';
 
-	import AccountBalance from '@src/routes/_components/AccountBalance.svelte';
-
 	// store
 	import { ContractActions, getGlobalStore } from '@stores/globalStore';
 
@@ -18,17 +16,16 @@
 	const contractActions = new ContractActions(globalStore);
 
 	// state
-	let owner = '';
-	let allowance: bigint | undefined = undefined;
+	let addr = '';
 
 	const dispatch = createEventDispatcher();
 
 	// computed
-	$: ownerErr = isAddress(owner) ? '' : 'Invalid address';
+	$: addrErr = isAddress(addr) ? '' : 'Invalid address';
 
 	// event handlers
-	const onGetAllowanceClick = async () => {
-		const res = await contractActions.allowance(owner);
+	const onAddClick = async () => {
+		const res = await contractActions.addAdmin(addr);
 
 		if (res.isError) {
 			console.error(res.unwrapErr());
@@ -39,21 +36,16 @@
 			return;
 		}
 
-		allowance = res.unwrap();
+		toast.success('The address added to admins');
+		dispatch('close');
 	};
 </script>
 
-<Modal title="Allowance" on:close>
-	<Input label="Owner" bind:value={owner} error={ownerErr} />
-
-	{#if allowance !== undefined}
-		<AccountBalance className="mt-3" balance={allowance} />
-	{/if}
+<Modal title="Add admin" on:close>
+	<Input label="Address" bind:value={addr} error={addrErr} />
 
 	<div class="flex gap-3 mt-4">
-		<Button className="flex-grow" disabled={!!ownerErr} on:click={onGetAllowanceClick}>
-			REQUEST
-		</Button>
+		<Button className="flex-grow" disabled={!!addrErr} on:click={onAddClick}>Add</Button>
 
 		<Button type="secondary" on:click={() => dispatch('close')}>CANCEL</Button>
 	</div>

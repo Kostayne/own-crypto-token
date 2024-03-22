@@ -8,8 +8,6 @@
 	import Input from '@c/Input.svelte';
 	import Button from '@c/buttons/Button.svelte';
 
-	import AccountBalance from '@src/routes/_components/AccountBalance.svelte';
-
 	// store
 	import { ContractActions, getGlobalStore } from '@stores/globalStore';
 
@@ -18,17 +16,16 @@
 	const contractActions = new ContractActions(globalStore);
 
 	// state
-	let owner = '';
-	let allowance: bigint | undefined = undefined;
+	let addr = '';
 
 	const dispatch = createEventDispatcher();
 
 	// computed
-	$: ownerErr = isAddress(owner) ? '' : 'Invalid address';
+	$: addrErr = isAddress(addr) ? '' : 'Invalid address';
 
 	// event handlers
-	const onGetAllowanceClick = async () => {
-		const res = await contractActions.allowance(owner);
+	const onRemoveClick = async () => {
+		const res = await contractActions.rmFromWhiteList(addr);
 
 		if (res.isError) {
 			console.error(res.unwrapErr());
@@ -39,20 +36,17 @@
 			return;
 		}
 
-		allowance = res.unwrap();
+		toast.success('The address removed from white list');
+		dispatch('close');
 	};
 </script>
 
-<Modal title="Allowance" on:close>
-	<Input label="Owner" bind:value={owner} error={ownerErr} />
-
-	{#if allowance !== undefined}
-		<AccountBalance className="mt-3" balance={allowance} />
-	{/if}
+<Modal title="Remove from whitelist" on:close>
+	<Input label="Address" bind:value={addr} error={addrErr} />
 
 	<div class="flex gap-3 mt-4">
-		<Button className="flex-grow" disabled={!!ownerErr} on:click={onGetAllowanceClick}>
-			REQUEST
+		<Button className="flex-grow" type="error" disabled={!!addrErr} on:click={onRemoveClick}>
+			Remove
 		</Button>
 
 		<Button type="secondary" on:click={() => dispatch('close')}>CANCEL</Button>

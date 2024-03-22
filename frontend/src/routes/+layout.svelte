@@ -32,4 +32,4 @@
 
 <slot />
 
-<Toaster toastOptions={{ duration: 2000 }} position="top-right" />
+<Toaster toastOptions={{ duration: 2000 }} position="top-center" />

@@ -1,4 +1,6 @@
 import type { HDNodeWallet } from "ethers";
+
+// types
 import type { HDAccount } from "./hdAccount.type";
 import type { AppContract } from "./appContract.type";
 
