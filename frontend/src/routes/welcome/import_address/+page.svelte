@@ -52,12 +52,12 @@
 
 <main class="flex flex-col w-full">
 	<WordsInput
+		className="mb-6"
+		words={importedWords}
+		bind:this={wordsInputRef}
 		on:validated={(e) => {
 			importedWordsAreValid = e.detail;
 		}}
-		bind:this={wordsInputRef}
-		words={importedWords}
-		className="mb-6"
 	/>
 
 	<Button

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { isAddress } from 'ethers';
 	import { createEventDispatcher } from 'svelte';
+	import toast from 'svelte-french-toast';
 
 	// c
 	import Input from '@c/Input.svelte';
@@ -11,7 +12,6 @@
 
 	// stores
 	import { ContractActions, getGlobalStore } from '@stores/globalStore';
-	import toast from 'svelte-french-toast';
 
 	// state
 	let address = '';

@@ -67,5 +67,5 @@
 		}}
 	/>
 
-	<Button on:click={onLoginClick} className="mt-3" disabled={!!passwordErr}>Login</Button>
+	<Button className="mt-3" on:click={onLoginClick} disabled={!!passwordErr}>Login</Button>
 </main>
