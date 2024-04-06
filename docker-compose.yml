@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  hardhat:
+    build:
+      context: .
+
+    image: erc20token
+
+    # ports:
+    #   - "8545:8545"
+
+    network_mode: host
+
+  hardhatDeploy:
+    build:
+      context: .
+
+    image: erc20deploy
+
+    command: npm run deploy
+
+    network_mode: host
+
+    depends_on:
+      - hardhat
+
+    restart: on-failure
+
+  frontend:
+    build:
+      context: ./frontend
+
+    image: erc20-wallet
+
+    depends_on:
+      - hardhat
+
+    restart: on-failure
+  
+    network_mode: host

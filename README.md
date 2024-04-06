@@ -1,13 +1,58 @@
-# Sample Hardhat Project
+# ERC20 Token with wallet
+Here is a custom ERC20 token that you can modify as you want, 
+also the project contains a frontend wallet for it.
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+Stack: hardhat, ethers, svelte.
 
-Try running some of the following tasks:
+Features:
+- Admins list
+- White list
+- Pause / unpause
+- Transfer to
+- Transfer from, approve
+- Total supply, balance of
+- Symbol, name
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
+## Docker
+
+### Compose
+Run all services. The wallet will be available on 127.0.0.1:80.
+```
+docker compose up
+```
+
+### Docker CLI
+Build an image
+```
+# hardhat node example
+docker build -t erc20token .
+```
+
+Run the image
+```
+# hardhat node example
+docker run -d -p 80:80 erc20token
+```
+
+## Local dev
+Run a hardhat node
+```
+npm run node
+```
+
+Deploy the contract to the node
+```
+# in different terminal
+npm run deploy
+```
+
+Run the frontend
+```
+cd frontend
+npm run dev
+```
+
+Test the contract
+```
+npm run test
 ```

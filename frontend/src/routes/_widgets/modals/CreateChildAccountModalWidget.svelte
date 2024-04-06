@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { HDNodeWallet } from 'ethers';
+	import { type HDNodeWallet } from 'ethers';
 	import toast from 'svelte-french-toast';
 
 	// c

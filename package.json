@@ -4,7 +4,9 @@
   "scripts": {
     "test": "npx hardhat test",
     "deploy": "npx hardhat run scripts/deploy.ts --network localhost",
-    "node": "npx hardhat node"
+    "node": "npx hardhat node",
+    "compile": "npx hardhat compile",
+    "start": "npm run node & sleep 5; npm run deploy && fg"
   },
 
   "devDependencies": {
