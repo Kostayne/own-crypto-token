@@ -3,26 +3,28 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: 'Inter';
-    src: url('/inter-variable-font.ttf');
+	font-family: 'Inter';
+	src: url('/inter-variable-font.ttf');
 }
 
 @layer base {
-    html {
-        font-family: Inter, sans-serif;
-    }
+	html {
+		font-family: Inter, sans-serif;
+	}
 
-    body {
-        padding: 20px;
-    }
+	body {
+		padding: 20px;
+	}
 }
 
-h1, h2, h3 {
-    font-size: unset;
+h1,
+h2,
+h3 {
+	font-size: unset;
 }
 
 main {
-    max-width: 425px;
-    margin-left: auto;
-    margin-right: auto;
+	max-width: 425px;
+	margin-left: auto;
+	margin-right: auto;
 }

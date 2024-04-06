@@ -1,141 +1,141 @@
-import { get } from "svelte/store";
-import { Err, Ok, toResult, type Result, type AsyncResult } from "base-ts-result";
-import toast from "svelte-french-toast";
+import { get } from 'svelte/store';
+import { Err, Ok, toResult, type Result, type AsyncResult } from 'base-ts-result';
+import toast from 'svelte-french-toast';
 
-import { 
-    JsonRpcProvider, 
-    InfuraProvider, 
-    CloudflareProvider, 
-    PocketProvider, 
-    AlchemyProvider, 
-    AnkrProvider,
-    Contract, 
+import {
+	JsonRpcProvider,
+	InfuraProvider,
+	CloudflareProvider,
+	PocketProvider,
+	AlchemyProvider,
+	AnkrProvider,
+	Contract,
 } from 'ethers';
 
 // types
-import type { ConnectionData } from "@t/connectionData.type";
-import type { EstablishConnectionErrT } from "@t/errors/establishConnectionError.type";
-import type { AppContract } from "@t/appContract.type";
+import type { ConnectionData } from '@t/connectionData.type';
+import type { EstablishConnectionErrT } from '@t/errors/establishConnectionError.type';
+import type { AppContract } from '@t/appContract.type';
 
 // actions
-import { GlobalStoreActions } from "../globalStoreActions"
+import { GlobalStoreActions } from '../globalStoreActions';
 
 // utils
-import { saveEncryptedData } from "@utils/encryptedDataStore";
+import { saveEncryptedData } from '@utils/encryptedDataStore';
 
 // cfg
-import { contractAbi, contractAddress } from "@src/cfg";
-
+import { contractAbi, contractAddress } from '@src/cfg';
 
 // custom types
 type GetProviderErr = 'NO_DATA' | 'INVALID_TYPE' | 'INVALID_PLATFORM';
 
 export class ConnectionActions extends GlobalStoreActions {
-    public setConnectionData(data: ConnectionData) {
-        const globalState = { ...get(this.store) };
-        globalState.encrypted.connectionData = data;
-        this.store.set(globalState);
+	public setConnectionData(data: ConnectionData) {
+		const globalState = { ...get(this.store) };
+		globalState.encrypted.connectionData = data;
+		this.store.set(globalState);
 
-        const saveRes = toResult(() => saveEncryptedData(globalState.encrypted, globalState.password)); {
-            if (saveRes.isError) {
-                console.error(saveRes.unwrapErr());
-                toast.error('Failed to save connection settings!');
-            }
-        }
-    }
+		const saveRes = toResult(() => saveEncryptedData(globalState.encrypted, globalState.password));
+		{
+			if (saveRes.isError) {
+				console.error(saveRes.unwrapErr());
+				toast.error('Failed to save connection settings!');
+			}
+		}
+	}
 
-    private getProvider(data: ConnectionData): Result<JsonRpcProvider, GetProviderErr> {
-        if (data.type === 'rpc') {
-            if (!data.rpc) {
-                return Err('NO_DATA');
-            }
+	private getProvider(data: ConnectionData): Result<JsonRpcProvider, GetProviderErr> {
+		if (data.type === 'rpc') {
+			if (!data.rpc) {
+				return Err('NO_DATA');
+			}
 
-            return Ok(new JsonRpcProvider(
-                data.rpc.url,
-                data.rpc.network,
-            ));
-        }
+			return Ok(new JsonRpcProvider(data.rpc.url, data.rpc.network));
+		}
 
-        if (data.type === 'api') {
-            if (!data.api) {
-                return Err('NO_DATA');
-            }
+		if (data.type === 'api') {
+			if (!data.api) {
+				return Err('NO_DATA');
+			}
 
-            const { apiKey, network, platform, infura, pocket } = data.api;
-            
-            switch (platform) {
-                case 'alchemy':
-                    return Ok(new AlchemyProvider(network, apiKey));
+			const { apiKey, network, platform, infura, pocket } = data.api;
 
-                case 'ankr':
-                    return Ok(new AnkrProvider(network, apiKey));
+			switch (platform) {
+				case 'alchemy':
+					return Ok(new AlchemyProvider(network, apiKey));
 
-                case 'cloudflare':
-                    return Ok(new CloudflareProvider(network));
+				case 'ankr':
+					return Ok(new AnkrProvider(network, apiKey));
 
-                case 'infura':
-                    if (!infura) {
-                        return Err('NO_DATA');
-                    }
+				case 'cloudflare':
+					return Ok(new CloudflareProvider(network));
 
-                    return Ok(new InfuraProvider(network, infura.projectId, infura.projectSecret));
+				case 'infura':
+					if (!infura) {
+						return Err('NO_DATA');
+					}
 
-                case 'pocket':
-                    if (!pocket) {
-                        return Err('NO_DATA');
-                    }
+					return Ok(new InfuraProvider(network, infura.projectId, infura.projectSecret));
 
-                    return Ok(new PocketProvider(network, pocket.appId, pocket.appSecret));
+				case 'pocket':
+					if (!pocket) {
+						return Err('NO_DATA');
+					}
 
-                default:
-                    return Err('INVALID_PLATFORM');
-            }
-        }
+					return Ok(new PocketProvider(network, pocket.appId, pocket.appSecret));
 
-        return Err('INVALID_TYPE');
-    }
+				default:
+					return Err('INVALID_PLATFORM');
+			}
+		}
 
-    /**
-     * @description creates a connection from the selected wallet to a contract instance
-     */
-    public async establishConnection(): AsyncResult<void, EstablishConnectionErrT> {
-        const globalState = {...get(this.store)};
-        const connData = globalState.encrypted.connectionData;
-        const selectedWallet = globalState.walletState.selectedWallet;
+		return Err('INVALID_TYPE');
+	}
 
-        // getting an ethereum blockchain provider
-        const providerRes = this.getProvider(connData); {
-            if (providerRes.isError) {
-                console.error(providerRes.unwrapErr());
-                return Err('PROVIDER_ERR');
-            }
-        }
+	/**
+	 * @description creates a connection from the selected wallet to a contract instance
+	 */
+	public async establishConnection(): AsyncResult<void, EstablishConnectionErrT> {
+		const globalState = { ...get(this.store) };
+		const connData = globalState.encrypted.connectionData;
+		const selectedWallet = globalState.walletState.selectedWallet;
 
-        // connecting select wallet to a provider
-        const connectWalletRes = toResult(() => selectedWallet.connect(providerRes.unwrap())); {
-            if (connectWalletRes.isError) {
-                console.error(connectWalletRes.unwrapErr());
-                return Err('PROVIDER_ERR');
-            }
-        }
+		// getting an ethereum blockchain provider
+		const providerRes = this.getProvider(connData);
+		{
+			if (providerRes.isError) {
+				console.error(providerRes.unwrapErr());
+				return Err('PROVIDER_ERR');
+			}
+		}
 
-        // getting a contract instance
-        const contractRes = toResult(() => 
-            new Contract(contractAddress, contractAbi, connectWalletRes.unwrap())
-        ); {
-            if (contractRes.isError) {
-                console.error(contractRes.unwrapErr());
-                return Err('CONTRACT_ERR');
-            }
-        };
+		// connecting select wallet to a provider
+		const connectWalletRes = toResult(() => selectedWallet.connect(providerRes.unwrap()));
+		{
+			if (connectWalletRes.isError) {
+				console.error(connectWalletRes.unwrapErr());
+				return Err('PROVIDER_ERR');
+			}
+		}
 
-        // successfully created a contract instance to interact with
-        // blockchain from selected address
-        globalState.walletState.contract = contractRes.unwrap() as unknown as AppContract;
+		// getting a contract instance
+		const contractRes = toResult(
+			() => new Contract(contractAddress, contractAbi, connectWalletRes.unwrap()),
+		);
+		{
+			if (contractRes.isError) {
+				console.error(contractRes.unwrapErr());
+				return Err('CONTRACT_ERR');
+			}
+		}
 
-        // update the store
-        this.store.set(globalState);
+		// successfully created a contract instance to interact with
+		// blockchain from selected address
+		globalState.walletState.contract = contractRes.unwrap() as unknown as AppContract;
 
-        return Ok(undefined);
-    }
+		// update the store
+		this.store.set(globalState);
+
+		return Ok(undefined);
+	}
 }

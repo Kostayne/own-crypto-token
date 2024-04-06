@@ -6,7 +6,7 @@ module.exports = {
 		'eslint:recommended',
 		'plugin:@typescript-eslint/recommended',
 		'plugin:svelte/recommended',
-		'prettier'
+		'prettier',
 	],
 
 	parser: '@typescript-eslint/parser',
@@ -15,13 +15,17 @@ module.exports = {
 	parserOptions: {
 		sourceType: 'module',
 		ecmaVersion: 2020,
-		extraFileExtensions: ['.svelte']
+		extraFileExtensions: ['.svelte'],
+	},
+
+	rules: {
+		indent: ['error', 4],
 	},
 
 	env: {
 		browser: true,
 		es2017: true,
-		node: true
+		node: true,
 	},
 
 	overrides: [
@@ -29,8 +33,8 @@ module.exports = {
 			files: ['*.svelte'],
 			parser: 'svelte-eslint-parser',
 			parserOptions: {
-				parser: '@typescript-eslint/parser'
-			}
-		}
-	]
+				parser: '@typescript-eslint/parser',
+			},
+		},
+	],
 };

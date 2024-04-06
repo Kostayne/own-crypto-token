@@ -1,21 +1,26 @@
-import { goto } from "$app/navigation";
-import { HDNodeWallet } from "ethers/wallet";
-import { get, type Writable } from "svelte/store";
-import { Err, Ok, toResult, type Result } from "base-ts-result";
-import toast from "svelte-french-toast";
+import { goto } from '$app/navigation';
+import { HDNodeWallet } from 'ethers/wallet';
+import { get, type Writable } from 'svelte/store';
+import { Err, Ok, toResult, type Result } from 'base-ts-result';
+import toast from 'svelte-french-toast';
 
 // class
-import { GlobalStoreActions } from "../globalStoreActions";
+import { GlobalStoreActions } from '../globalStoreActions';
 
 // utils
-import { savePassword } from "@utils/userPasswordStore";
-import { generateHDAccountsFromData } from "@utils/generateHDAccountsFromGenData";
-import { deleteEncryptedData, loadEncryptedData, loadEncryptedDataRaw, saveEncryptedData } from "@utils/encryptedDataStore";
+import { savePassword } from '@utils/userPasswordStore';
+import { generateHDAccountsFromData } from '@utils/generateHDAccountsFromGenData';
+import {
+	deleteEncryptedData,
+	loadEncryptedData,
+	loadEncryptedDataRaw,
+	saveEncryptedData,
+} from '@utils/encryptedDataStore';
 
 // types
-import type { GlobalStateData } from "../globalStateData.type";
-import type { EncryptedData } from "@t/encryptedData.type";
-import type { InitData } from "@stores/initStore/initData.type";
+import type { GlobalStateData } from '../globalStateData.type';
+import type { EncryptedData } from '@t/encryptedData.type';
+import type { InitData } from '@stores/initStore/initData.type';
 
 type LoginError = 'INVALID_PASSWORD' | 'INVALID_SEED' | 'NOT_REGISTERED';
 type RegisterError = 'INVALID_SEED' | 'FAILED_TO_SAVE' | 'NO_SEED_PHRASE';
@@ -23,7 +28,7 @@ type RegisterError = 'INVALID_SEED' | 'FAILED_TO_SAVE' | 'NO_SEED_PHRASE';
 const revalidateTempPassInterval = NaN;
 
 export class AuthActions extends GlobalStoreActions {
-    login(password: string, destPath = '/'): Result<void, LoginError> {
+	login(password: string, destPath = '/'): Result<void, LoginError> {
 		// redir to welcome if no secret phrase stored
 		if (!loadEncryptedDataRaw()) {
 			goto('/welcome');
@@ -33,16 +38,17 @@ export class AuthActions extends GlobalStoreActions {
 		const globalState = {} as GlobalStateData;
 
 		// loading encrypted data
-        const encryptedDataRes = toResult(() => loadEncryptedData(password)); {
-            if (encryptedDataRes.isError) {
-                return Err('INVALID_PASSWORD');
-            }
-        }
+		const encryptedDataRes = toResult(() => loadEncryptedData(password));
+		{
+			if (encryptedDataRes.isError) {
+				return Err('INVALID_PASSWORD');
+			}
+		}
 
 		const encryptedData = encryptedDataRes.unwrap() as EncryptedData;
 
-        globalState.password = password;
-        globalState.encrypted = encryptedData;
+		globalState.password = password;
+		globalState.encrypted = encryptedData;
 
 		// setting wallet state
 		try {
@@ -66,17 +72,20 @@ export class AuthActions extends GlobalStoreActions {
 		}
 
 		// starting new revalidation cycle
-		setInterval(() => {
-			savePassword(globalState.password);
-		}, 1000 * 60 * 3);
+		setInterval(
+			() => {
+				savePassword(globalState.password);
+			},
+			1000 * 60 * 3,
+		);
 
 		savePassword(globalState.password);
 
 		this.store.set(globalState);
 		goto(destPath);
 
-        return Ok(undefined);
-    }
+		return Ok(undefined);
+	}
 
 	register(initDataStore: Writable<InitData>, password: string): Result<void, RegisterError> {
 		// if some how we not have seed phrase redirect user
@@ -92,7 +101,8 @@ export class AuthActions extends GlobalStoreActions {
 		// and setting global wallet state
 		const seedPhrase = get(initDataStore).seedPhrase as string;
 
-		const walletRes = toResult(() => HDNodeWallet.fromPhrase(seedPhrase)); {
+		const walletRes = toResult(() => HDNodeWallet.fromPhrase(seedPhrase));
+		{
 			if (walletRes.isError) {
 				return Err('INVALID_SEED');
 			}
@@ -122,7 +132,8 @@ export class AuthActions extends GlobalStoreActions {
 		this.store.set(globalState);
 
 		// saving encrypted data to browser
-		const saveRes = toResult(() => saveEncryptedData(globalState.encrypted, password)); {
+		const saveRes = toResult(() => saveEncryptedData(globalState.encrypted, password));
+		{
 			if (saveRes.isError) {
 				console.error(saveRes.unwrapErr());
 				return Err('FAILED_TO_SAVE');

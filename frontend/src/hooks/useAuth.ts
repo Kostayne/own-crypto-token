@@ -11,18 +11,18 @@ import { loadEncryptedDataRaw } from '@utils/encryptedDataStore';
 import { loadPasswordByTemporary } from '@utils/userPasswordStore';
 
 /**
- * @init ensures that user generated a wallet seed, 
+ * @init ensures that user generated a wallet seed,
  * @registered ensures that user set password with a seed
  * @loggedIn ensures that all account info is loaded into state
  */
 type AuthType = 'init' | 'registered' | 'loggedIn';
 
 export function useAuth(type: AuthType, destPath = '/') {
-    // global state
+	// global state
 	const globalStore = getGlobalStore();
 	const initStore = getInitStore();
 
-    // hooks
+	// hooks
 	onMount(() => {
 		// page requires basic init account state
 		// =======================================
@@ -39,7 +39,8 @@ export function useAuth(type: AuthType, destPath = '/') {
 
 		// page requires to be registered
 		// ==============================
-		const encryptedData = loadEncryptedDataRaw(); {
+		const encryptedData = loadEncryptedDataRaw();
+		{
 			// there is not account data, redirect to welcome
 			if (!encryptedData) {
 				goto('/welcome');
@@ -51,8 +52,8 @@ export function useAuth(type: AuthType, destPath = '/') {
 				return;
 			}
 		}
-		
-		// page requires to be logged in		
+
+		// page requires to be logged in
 		// =============================
 
 		// already authenticated, not redirecting
@@ -61,7 +62,8 @@ export function useAuth(type: AuthType, destPath = '/') {
 		}
 
 		// not logged in, trying tempPassword
-		const passwordRes = loadPasswordByTemporary(); {
+		const passwordRes = loadPasswordByTemporary();
+		{
 			// temp password failed, redirecting
 			if (passwordRes.isError) {
 				const sp = new URLSearchParams();

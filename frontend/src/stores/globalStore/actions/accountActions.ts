@@ -1,20 +1,20 @@
-import { get } from "svelte/store";
+import { get } from 'svelte/store';
 
 // types
-import type { HDAccount } from "@t/hdAccount.type";
+import type { HDAccount } from '@t/hdAccount.type';
 
 // actions
-import { GlobalStoreActions } from "../globalStoreActions";
+import { GlobalStoreActions } from '../globalStoreActions';
 
 // utils
-import { saveEncryptedData } from "@utils/encryptedDataStore";
+import { saveEncryptedData } from '@utils/encryptedDataStore';
 
-export type CreateAccountErr = 'NOT_AUTHORIZED'| 'FAILED_TO_SAVE';
+export type CreateAccountErr = 'NOT_AUTHORIZED' | 'FAILED_TO_SAVE';
 
 export class AccountActions extends GlobalStoreActions {
-    createAccount({ index, name, wallet }: HDAccount): CreateAccountErr | undefined {
-        if (!this.store) {
-            return 'NOT_AUTHORIZED';
+	createAccount({ index, name, wallet }: HDAccount): CreateAccountErr | undefined {
+		if (!this.store) {
+			return 'NOT_AUTHORIZED';
 		}
 
 		const globalState = { ...get(this.store) };
@@ -39,23 +39,23 @@ export class AccountActions extends GlobalStoreActions {
 		try {
 			saveEncryptedData(globalState.encrypted, globalState.password);
 		} catch (e) {
-            return 'FAILED_TO_SAVE';
+			return 'FAILED_TO_SAVE';
 		}
-    }
+	}
 
 	editAccount(address: string, newName: string) {
 		// forking global state
 		const globalState = { ...get(this.store) };
 
 		// getting acc to edit
-		const stateAcc = globalState.walletState.accounts.find(a => a.wallet.address === address);
+		const stateAcc = globalState.walletState.accounts.find((a) => a.wallet.address === address);
 
 		if (!stateAcc) {
 			throw new Error('Could not find account to edit in state!');
 		}
 
-		const encryptedAcc = globalState.encrypted.accounts.find(a => stateAcc.index === a.index);
-		
+		const encryptedAcc = globalState.encrypted.accounts.find((a) => stateAcc.index === a.index);
+
 		if (!encryptedAcc) {
 			throw new Error('Could not find account to edit in encrypted data!');
 		}
@@ -74,7 +74,7 @@ export class AccountActions extends GlobalStoreActions {
 		const globalState = { ...get(this.store) };
 
 		// getting acc to delete
-		const accToDel = globalState.walletState.accounts.find(a => a.wallet.address === address);
+		const accToDel = globalState.walletState.accounts.find((a) => a.wallet.address === address);
 
 		// nothing to delete
 		if (!accToDel) {
@@ -92,10 +92,14 @@ export class AccountActions extends GlobalStoreActions {
 		}
 
 		// deleting acc from wallet state
-		globalState.walletState.accounts = globalState.walletState.accounts.filter(a => a.wallet.address !== address);
+		globalState.walletState.accounts = globalState.walletState.accounts.filter(
+			(a) => a.wallet.address !== address,
+		);
 
 		// deleting acc from encrypted data
-		globalState.encrypted.accounts = globalState.encrypted.accounts.filter(a => a.index !== accToDel.index);
+		globalState.encrypted.accounts = globalState.encrypted.accounts.filter(
+			(a) => a.index !== accToDel.index,
+		);
 
 		// saving data to the browser
 		saveEncryptedData(globalState.encrypted, globalState.password);

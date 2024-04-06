@@ -1,4 +1,4 @@
 export interface HDAccountGenerationData {
-    index: number;
-    name: string;
+	index: number;
+	name: string;
 }

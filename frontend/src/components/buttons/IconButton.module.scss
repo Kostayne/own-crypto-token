@@ -2,17 +2,19 @@
 // so i wrote them in scss
 
 .fill {
-    &:hover {
-        path, svg {
-            fill: #FCFCFC;
-        }
-    }
+	&:hover {
+		path,
+		svg {
+			fill: #fcfcfc;
+		}
+	}
 }
 
 .btn_stroke {
-    &:hover {
-        path, svg {
-            stroke: #FCFCFC;
-        }
-    }
+	&:hover {
+		path,
+		svg {
+			stroke: #fcfcfc;
+		}
+	}
 }

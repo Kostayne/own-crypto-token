@@ -27,8 +27,6 @@ const config = {
 			'@src/*': './src/*',
 		},
 	},
-
-	
 };
 
 export default config;

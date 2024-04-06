@@ -1,4 +1,4 @@
 export interface InfuraConnectionData {
-    projectId: string;
-    projectSecret: string;
+	projectId: string;
+	projectSecret: string;
 }

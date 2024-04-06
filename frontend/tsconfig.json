@@ -28,5 +28,5 @@
 		},
 
 		"types": ["@types/dom-view-transitions"]
-	},
+	}
 }
