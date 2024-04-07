@@ -137,6 +137,14 @@ contract MyToken is ERC20, Owned, WhiteList, Pausable {
         tokenSummary = TokenSummary(initialAccount, _name, _symbol);
     }
 
+    function name() public view returns (string memory) {
+        return tokenSummary.name;
+    }
+
+    function symbol() public view returns (string memory) {
+        return tokenSummary.symbol;
+    }
+
     modifier verifyTransfer(
         address from,
         address to,
