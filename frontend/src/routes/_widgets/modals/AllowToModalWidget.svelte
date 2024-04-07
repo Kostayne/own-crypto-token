@@ -17,7 +17,7 @@
 	import { ContractActions, getGlobalStore } from '@stores/globalStore';
 
 	// utils
-	import { fetchBalanceOrShowErr } from '@utils/fetchBalance';
+	import { fetchBalanceOrShowErr } from '@utils/fetchBalanceOrShowErr';
 
 	// store
 	const globalStore = getGlobalStore();

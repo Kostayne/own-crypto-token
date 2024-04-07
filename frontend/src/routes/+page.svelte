@@ -32,7 +32,8 @@
 	import { useAuth } from '@hooks/useAuth';
 
 	// utils
-	import { fetchBalanceOrShowErr } from '@utils/fetchBalance';
+	import { fetchBalanceOrShowErr } from '@utils/fetchBalanceOrShowErr';
+	import toast from 'svelte-french-toast';
 
 	// store
 	const globalStore = getGlobalStore();
@@ -87,7 +88,22 @@
 			}
 		}
 
-		selectedAccBalance = await fetchBalanceOrShowErr(contractActions);
+		const balanceRes = await contractActions.getBalance();
+
+		if (balanceRes.isError) {
+			console.error(balanceRes.unwrapErr());
+			const msg = balanceRes.unwrapErr().shortMessage;
+
+			if (!msg) {
+				// when err msg is empty it's a connection error
+				connectionErr = 'PROVIDER_ERR';
+				return;
+			}
+
+			toast.error(msg);
+		}
+
+		selectedAccBalance = balanceRes.unwrap();
 
 		// fetching is admin
 		const isAdminRes = await contractActions.isAdmin();

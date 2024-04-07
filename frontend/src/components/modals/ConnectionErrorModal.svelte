@@ -18,7 +18,7 @@
 	const getErrMsg = (): string => {
 		switch (errorType) {
 			case 'PROVIDER_ERR':
-				return 'Failed to create a provider, did you type valid values?';
+				return 'Failed to create a provider, did you type right info?';
 			case 'SIGNER_ERR':
 				return 'Failed to create a signer, is all ok with your wallet?';
 			case 'CONTRACT_ERR':
@@ -29,6 +29,7 @@
 	};
 
 	$: showSettingsBtn = errorType !== 'CONTRACT_ERR';
+	$: settingsUrl = errorType === 'PROVIDER_ERR' ? '/settings?connection=true' : '/settings';
 </script>
 
 <Modal title="CONNECTION FAILED" type="error" on:close>
@@ -40,7 +41,7 @@
 				<Button
 					className={gs('flex-grow')}
 					on:click={() => {
-						goto('/settings');
+						goto(settingsUrl);
 						dispatch('close');
 					}}
 				>
@@ -49,7 +50,7 @@
 			{/if}
 
 			<Button
-				className={gs(showSettingsBtn ? 'w-[75px]' : '')}
+				className={gs(showSettingsBtn ? 'w-[75px]' : 'w-full')}
 				type="secondary"
 				on:click={() => {
 					dispatch('close');

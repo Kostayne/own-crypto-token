@@ -16,7 +16,7 @@
 	import MaxValueButton from '@src/routes/_components/buttons/MaxValueButton.svelte';
 
 	// utils
-	import { fetchBalanceOrShowErr } from '@utils/fetchBalance';
+	import { fetchBalanceOrShowErr } from '@utils/fetchBalanceOrShowErr';
 
 	// cfg
 	import { tokenSymbol } from '@src/cfg';

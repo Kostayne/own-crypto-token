@@ -11,7 +11,7 @@
 	export let isCollapsible = true;
 
 	// state
-	let isOpened = false;
+	export let isOpened = false;
 </script>
 
 <Card className={gs(className)}>

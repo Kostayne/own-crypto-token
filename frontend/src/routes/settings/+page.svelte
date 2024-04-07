@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 
 	// c
 	import Button from '@c/buttons/Button.svelte';
@@ -11,14 +13,25 @@
 
 	// icons
 	import RmSvg from '@icons/rm.svg?component';
+
+	// shared hooks
 	import { useAuth } from '@hooks/useAuth';
 
 	// ctx
 	const globalStore = getGlobalStore();
 	const authActions = new AuthActions(globalStore);
 
+	let isConnectionCardOpened = false;
+
 	// hooks
 	useAuth('loggedIn', '/settings');
+
+	onMount(() => {
+		console.log($page.url.searchParams);
+		if ($page.url.searchParams.get('connection')) {
+			isConnectionCardOpened = true;
+		}
+	});
 </script>
 
 <svelte:head>
@@ -42,7 +55,7 @@
 		</IconButton>
 	</div>
 
-	<ConnectionInfoCard isCollapsible className="mt-4" />
+	<ConnectionInfoCard isOpened={isConnectionCardOpened} isCollapsible className="mt-4" />
 
 	<Button
 		className="mt-5 mx-auto"
