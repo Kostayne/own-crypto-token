@@ -2,18 +2,21 @@
 Here is a custom ERC20 token that you can modify as you want, 
 also the project contains a frontend wallet for it.
 
+![Welcome page](public/wallet_welcome.webp)
+![Welcome page](public/wallet_home.webp)
+
 Stack: hardhat, ethers, svelte.
 
 Features:
-- Admins list
-- White list
-- Pause / unpause
-- Transfer to
-- Transfer from, approve
-- Total supply, balance of
-- Symbol, name
+- Admins list :white_check_mark:
+- White list :white_check_mark:
+- Pause / unpause :white_check_mark:
+- Transfer to :white_check_mark:
+- Transfer from, approve :white_check_mark:
+- Total supply, balance of :white_check_mark:
+- Symbol, name :white_check_mark:
 
-## Docker
+## Docker :whale:
 
 ### Compose
 Run all services. The wallet will be available on 127.0.0.1:80.
