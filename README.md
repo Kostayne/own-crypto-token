@@ -12,8 +12,8 @@ Features:
 - Symbol, name :white_check_mark:
 
 <div style="display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap;">
-    <img src="public/wallet_home.webp" alt="Home" />
-    <img src="public/wallet_welcome.webp" alt="Welcome page" />
+    <img align="top" src="public/wallet_home.webp" alt="Home" />
+    <img align="top" src="public/wallet_welcome.webp" alt="Welcome page" />
 </div>
 
 ## Docker :whale:
