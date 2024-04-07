@@ -2,9 +2,6 @@
 Here is a custom ERC20 token that you can modify as you want, 
 also the project contains a frontend wallet for it.
 
-![Welcome page](public/wallet_welcome.webp)
-![Welcome page](public/wallet_home.webp)
-
 Stack: hardhat, ethers, svelte.
 
 Features:
@@ -15,6 +12,9 @@ Features:
 - Transfer from, approve :white_check_mark:
 - Total supply, balance of :white_check_mark:
 - Symbol, name :white_check_mark:
+
+![Welcome page](public/wallet_home.webp)
+![Welcome page](public/wallet_welcome.webp)
 
 ## Docker :whale:
 
